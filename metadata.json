@@ -1,0 +1,6 @@
+{
+  "name": "PK999",
+  "description": "PK999 - 91 Club Color Prediction & Lottery Gaming Platform with live 30s Win Go rounds, real-time wallet, turnover engine & multi-tier referral system.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
