@@ -1,4 +1,4 @@
-name: Build Signed APK and AAB
+name: Build APK and AAB
 
 on:
   push:
@@ -27,8 +27,27 @@ jobs:
       - name: Setup Cordova Project
         run: |
           cordova create myApp com.pk999.app PK999
-          cp index.html myApp/www/index.html || cp *.html myApp/www/index.html
           cd myApp
+          
+          # HTML/JS files local www folder mein copy karein
+          cp -r ../* www/ || true
+          
+          # Local entry point setting configure karein
+          cat <<EOF > config.xml
+          <?xml version='1.0' encoding='utf-8'?>
+          <widget id="com.pk999.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+              <name>PK999</name>
+              <description>PK999 Official Gaming App</description>
+              <author email="dev@pk999.app">PK999</author>
+              <content src="index.html" />
+              <access origin="*" />
+              <allow-intent href="http://*/*" />
+              <allow-intent href="https://*/*" />
+              <preference name="Scheme" value="http" />
+              <preference name="Hostname" value="localhost" />
+          </widget>
+          EOF
+          
           cordova platform add android
 
       - name: Build Debug APK
@@ -36,18 +55,18 @@ jobs:
           cd myApp
           cordova build android --debug
 
-      - name: Build Release AAB (App Bundle for Play Store)
+      - name: Build Release AAB
         run: |
           cd myApp
           cordova build android --release -- --packageType=bundle
 
-      - name: Upload Debug APK
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: PK999-Debug-APK
           path: myApp/platforms/android/app/build/outputs/apk/debug/*.apk
 
-      - name: Upload Release AAB
+      - name: Upload AAB Bundle
         uses: actions/upload-artifact@v4
         with:
           name: PK999-Release-AAB
