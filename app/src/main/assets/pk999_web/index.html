@@ -14,6 +14,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
 
   <style>
     :root {
@@ -1044,21 +1045,25 @@
 <script>
   // EXACT REAL FIREBASE CONFIGURATION PROVIDED BY USER
   const firebaseConfig = {
-    apiKey: "AIzaSyAbkOoWKikD5aqC9MfHPz9byW05Huum8Iw",
+    apiKey: "AIzaSyBRX2ksl3Oh5KBtX7BzchX7Mnu62fwtRNE",
     authDomain: "pk999-9f93b.firebaseapp.com",
     databaseURL: "https://pk999-9f93b-default-rtdb.firebaseio.com",
     projectId: "pk999-9f93b",
     storageBucket: "pk999-9f93b.firebasestorage.app",
     messagingSenderId: "453265791703",
-    appId: "1:453265791703:android:669cc244d5b7a74116e92"
+    appId: "1:453265791703:web:76854eef7aa7743e116e92",
+    measurementId: "G-D8QJ0LCFQP"
   };
 
   // Initialize Firebase
-  let app, auth, db;
+  let app, auth, db, analytics;
   try {
     app = firebase.initializeApp(firebaseConfig);
     auth = firebase.auth();
     db = firebase.database();
+    if (firebase.analytics) {
+      analytics = firebase.analytics();
+    }
   } catch (err) {
     console.error("Firebase init error:", err);
   }
