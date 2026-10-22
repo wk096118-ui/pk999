@@ -1,4 +1,4 @@
-name: Build APK
+name: Build Signed APK and AAB
 
 on:
   push:
@@ -24,21 +24,32 @@ jobs:
       - name: Install Cordova
         run: npm install -g cordova
 
-      - name: Create Cordova Project
+      - name: Setup Cordova Project
         run: |
           cordova create myApp com.pk999.app PK999
           cp index.html myApp/www/index.html || cp *.html myApp/www/index.html
           cd myApp
           cordova platform add android
 
-      - name: Build Android APK
+      - name: Build Debug APK
         run: |
           cd myApp
           cordova build android --debug
 
-      - name: Upload APK Artifact
+      - name: Build Release AAB (App Bundle for Play Store)
+        run: |
+          cd myApp
+          cordova build android --release -- --packageType=bundle
+
+      - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: PK999-Debug-APK
           path: myApp/platforms/android/app/build/outputs/apk/debug/*.apk
+
+      - name: Upload Release AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: PK999-Release-AAB
+          path: myApp/platforms/android/app/build/outputs/bundle/release/*.aab
           
