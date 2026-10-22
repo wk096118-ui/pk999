@@ -1,26 +1,48 @@
-name: Generate APK from Web App
+name: Build Android APK
 
 on:
+  workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Use Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
-      - name: Build Android Package via PWABuilder CLI
-        uses: pwabuilder/pwabuilder-action@main
+      - uses: actions/setup-java@v4
         with:
-          url: https://wk096118-ui.github.io/pk999/
-          platform: android
-          output: android-out
-          
+          distribution: temurin
+          java-version: 17
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Install and build web app
+        run: |
+          npm install
+          npm run build -- --base=./
+
+      - name: Setup Capacitor Android
+        run: |
+          npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
+          if [ ! -f capacitor.config.json ] && [ ! -f capacitor.config.ts ]; then
+            npx cap init "MyApp" com.wk096118.pk999 --web-dir=dist
+          fi
+          npx cap add android
+          npx cap sync android
+
+      - name: Build APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-apk
+          path: android/app/build/outputs/apk/debug/*.apk
