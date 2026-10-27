@@ -17,6 +17,9 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Create package.json
         run: |
           echo '{"name": "pk999", "version": "1.0.0", "dependencies": {"cordova": "^12.0.0"}}' > package.json
@@ -28,11 +31,12 @@ jobs:
         run: |
           cordova create myApp com.pk999.app PK999
           cd myApp
-          
-          # HTML/JS files local www folder mein copy karein
-          cp -r ../* www/ || true
-          
-          # Local entry point setting configure karein
+
+          # Clean www folder and copy real self-contained web app
+          rm -rf www/*
+          cp ../index.html www/index.html
+
+          # Configure config.xml with extended timeout and https localhost scheme
           cat <<EOF > config.xml
           <?xml version='1.0' encoding='utf-8'?>
           <widget id="com.pk999.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
@@ -43,11 +47,15 @@ jobs:
               <access origin="*" />
               <allow-intent href="http://*/*" />
               <allow-intent href="https://*/*" />
-              <preference name="Scheme" value="http" />
+              <allow-navigation href="*" />
+              <preference name="loadUrlTimeoutValue" value="70000" />
+              <preference name="Scheme" value="https" />
               <preference name="Hostname" value="localhost" />
+              <preference name="AndroidInsecureFileModeEnabled" value="true" />
+              <preference name="MixedContentMode" value="0" />
           </widget>
           EOF
-          
+
           cordova platform add android
 
       - name: Build Debug APK
@@ -71,4 +79,3 @@ jobs:
         with:
           name: PK999-Release-AAB
           path: myApp/platforms/android/app/build/outputs/bundle/release/*.aab
-          

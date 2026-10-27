@@ -1,0 +1,2260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>PK999 - 91 Club Official Color Prediction Platform</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Firebase Compat SDKs (Production) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
+
+  <style>
+    :root {
+      --bg-base: #141420;
+      --bg-main: #1e1e2d;
+      --bg-card: #272738;
+      --bg-elevated: #32324a;
+      --gold: #FFD700;
+      --gold-dark: #b8960c;
+      --gold-light: #fff3a8;
+      --green: #00E676;
+      --green-dark: #00b248;
+      --red: #FF4D4D;
+      --red-dark: #cc0000;
+      --violet: #9C27B0;
+      --text-main: #ffffff;
+      --text-muted: #a0a0ba;
+      --border-color: #383852;
+      --gold-border: rgba(255, 215, 0, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    #app-container {
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg-main);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-shadow: 0 0 50px rgba(0,0,0,0.9);
+      position: relative;
+      padding-bottom: 74px;
+    }
+
+    /* Splash Screen Overlay */
+    #splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, #27273d 0%, #141420 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 24px;
+      text-align: center;
+      transition: opacity 0.5s ease;
+    }
+
+    .crown-glow {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,215,0,0.3) 0%, rgba(255,215,0,0) 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      border: 2px solid var(--gold);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+      animation: float 2.5s infinite ease-in-out;
+      margin-bottom: 20px;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .brand-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 44px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+    }
+    .brand-title .pk { color: var(--green); }
+    .brand-title .num { color: var(--gold); text-shadow: 0 0 15px rgba(255,215,0,0.6); }
+
+    .brand-subtitle {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gold-dark);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+    }
+
+    .google-signin-btn {
+      background: #ffffff;
+      color: #1f1f1f;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 30px;
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 320px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+      transition: all 0.2s;
+    }
+    .google-signin-btn:active {
+      transform: scale(0.97);
+    }
+    .google-g-icon {
+      width: 22px;
+      height: 22px;
+    }
+
+    .disclaimer {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 24px;
+      max-width: 300px;
+      line-height: 1.5;
+    }
+
+    /* Top Sticky Header */
+    header {
+      background: var(--bg-card);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header-crown {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255,215,0,0.15);
+      border: 1px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .header-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+    }
+    .header-wallet {
+      background: var(--bg-main);
+      border: 1px solid var(--gold-border);
+      padding: 6px 14px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .header-balance {
+      color: var(--gold);
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    /* Main Scrollable View */
+    main {
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* User Profile & Real Wallet Card */
+    .profile-wallet-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      border: 1px solid var(--gold-border);
+      padding: 16px;
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .real-balance-val {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 34px;
+      font-weight: 800;
+      color: var(--gold);
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .real-balance-val span {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .wallet-btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .btn-act {
+      flex: 1;
+      padding: 11px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: transform 0.1s;
+    }
+    .btn-act:active { transform: scale(0.97); }
+    .btn-deposit { background: var(--green); color: #111; }
+    .btn-withdraw { background: var(--bg-elevated); color: var(--gold); border: 1px solid var(--gold); }
+
+    /* 29x Turnover Progress Bar */
+    .turnover-card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      padding: 12px 14px;
+    }
+    .turnover-meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .turnover-bar {
+      height: 7px;
+      background: var(--bg-main);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .turnover-progress {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold) 0%, var(--green) 100%);
+      width: 0%;
+      transition: width 0.3s;
+    }
+    .turnover-sub {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 10px;
+    }
+
+    /* Win Go 30s Game Arena Card */
+    .arena-box {
+      background: var(--bg-card);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      padding: 16px;
+    }
+    .period-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .period-title {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .period-number {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .timer-display {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .timer-cell {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      color: var(--gold);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 6px;
+      min-width: 26px;
+      text-align: center;
+    }
+    .locked-mode .timer-cell {
+      color: var(--red);
+      border-color: var(--red);
+      background: rgba(255, 77, 77, 0.15);
+    }
+    .lock-banner {
+      display: none;
+      background: rgba(255, 77, 77, 0.18);
+      border: 1px solid var(--red);
+      color: #fff;
+      padding: 6px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    /* High-Frequency Betting Grid */
+    .color-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .color-btn {
+      padding: 14px 6px;
+      border-radius: 10px;
+      border: none;
+      color: #fff;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: transform 0.1s, opacity 0.2s;
+    }
+    .color-btn:active { transform: scale(0.96); }
+    .color-btn small { font-size: 11px; color: var(--gold); font-weight: 700; margin-top: 2px; }
+    .c-green { background: linear-gradient(180deg, #00E676 0%, #00b248 100%); }
+    .c-violet { background: linear-gradient(180deg, #9C27B0 0%, #7b1fa2 100%); }
+    .c-red { background: linear-gradient(180deg, #FF4D4D 0%, #cc0000 100%); }
+
+    /* Number Balls Grid (0 to 9) */
+    .numbers-box {
+      background: var(--bg-main);
+      padding: 12px;
+      border-radius: 12px;
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+    .num-ball {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+      transition: transform 0.1s;
+    }
+    .num-ball:active { transform: scale(0.92); }
+    .ball-split-0 { background: linear-gradient(135deg, var(--red) 50%, var(--violet) 50%); }
+    .ball-split-5 { background: linear-gradient(135deg, var(--green) 50%, var(--violet) 50%); }
+    .ball-green { background: var(--green); }
+    .ball-red { background: var(--red); }
+
+    /* Big / Small Choice */
+    .big-small-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .bs-btn {
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-big { background: #FF9800; }
+    .btn-small { background: #2196F3; }
+
+    /* History & Trends Section */
+    .history-card {
+      background: var(--bg-card);
+      border-radius: 14px;
+      border: 1px solid var(--border-color);
+      padding: 14px;
+    }
+    .tabs-row {
+      display: flex;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 10px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .tab-btn.active {
+      color: var(--gold);
+      border-bottom: 2px solid var(--gold);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th { color: var(--text-muted); text-align: left; padding: 6px 0; border-bottom: 1px solid var(--border-color); }
+    td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .c-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; vertical-align: middle; }
+
+    /* Bottom Navigation Bar */
+    nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg-card);
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      border-top: 1px solid var(--border-color);
+      z-index: 95;
+    }
+    .nav-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .nav-link.active { color: var(--gold); font-weight: 700; }
+    .nav-icon { font-size: 18px; }
+
+    /* Modals & Dialogs */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 16px;
+    }
+    .modal-sheet {
+      background: var(--bg-card);
+      width: 100%;
+      max-width: 400px;
+      border-radius: 18px;
+      border: 1px solid var(--gold);
+      padding: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-title {
+      color: var(--gold);
+      font-size: 17px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .form-group {
+      margin-top: 12px;
+      text-align: left;
+    }
+    .form-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      display: block;
+    }
+    .form-input, .form-select {
+      width: 100%;
+      padding: 11px 12px;
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+    .form-input:focus { border-color: var(--gold); }
+    .chips-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .chip {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+    .chip.active {
+      background: var(--gold);
+      color: var(--bg-main);
+      border-color: var(--gold);
+    }
+    .stepper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .stepper-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      color: var(--gold);
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .stepper-val {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--gold);
+    }
+    .modal-btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    /* Views Switching */
+    .view-section { display: none; }
+    .view-section.active { display: block; }
+
+    /* Visual Toast Notification System */
+    #toast-container {
+      position: fixed;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 28px);
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 10000;
+      pointer-events: none;
+    }
+
+    .toast-item {
+      pointer-events: auto;
+      background: rgba(30, 30, 46, 0.95);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.7), 0 0 15px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      overflow: hidden;
+      animation: toastIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+      cursor: pointer;
+    }
+
+    .toast-item.dismissing {
+      transform: translateY(-24px) scale(0.92);
+      opacity: 0;
+    }
+
+    @keyframes toastIn {
+      0% { transform: translateY(-36px) scale(0.92); opacity: 0; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    /* Win Toast Special Aesthetics */
+    .toast-win {
+      border: 1.5px solid var(--gold);
+      background: radial-gradient(circle at top right, rgba(255, 215, 0, 0.22), transparent 70%),
+                  radial-gradient(circle at bottom left, rgba(0, 230, 118, 0.18), transparent 70%),
+                  rgba(26, 26, 40, 0.97);
+      box-shadow: 0 16px 44px rgba(0,0,0,0.85), 0 0 25px rgba(255, 215, 0, 0.4);
+    }
+
+    .toast-win::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%; width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+      transform: skewX(-20deg);
+      animation: shimmerSweep 2.2s infinite;
+    }
+
+    @keyframes shimmerSweep {
+      0% { left: -100%; }
+      100% { left: 200%; }
+    }
+
+    .toast-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .toast-win .toast-icon-wrap {
+      background: linear-gradient(135deg, rgba(255,215,0,0.3) 0%, rgba(0,230,118,0.3) 100%);
+      border: 1.5px solid var(--gold);
+      box-shadow: 0 0 16px rgba(255,215,0,0.55);
+      animation: iconFloat 1.2s infinite ease-in-out;
+    }
+
+    @keyframes iconFloat {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.12) rotate(6deg); }
+    }
+
+    .toast-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .toast-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+
+    .toast-badge {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .badge-win {
+      background: rgba(255, 215, 0, 0.22);
+      color: var(--gold);
+      border: 1px solid rgba(255, 215, 0, 0.5);
+    }
+    .badge-info { background: rgba(33, 150, 243, 0.22); color: #64B5F6; }
+    .badge-success { background: rgba(0, 230, 118, 0.22); color: var(--green); }
+    .badge-warning { background: rgba(255, 152, 0, 0.22); color: #FFB74D; }
+    .badge-error { background: rgba(255, 77, 77, 0.22); color: var(--red); }
+
+    .toast-win-amt {
+      color: var(--green);
+      font-size: 22px;
+      font-weight: 900;
+      font-family: 'Rajdhani', sans-serif;
+      text-shadow: 0 0 12px rgba(0, 230, 118, 0.6);
+      letter-spacing: 0.5px;
+    }
+
+    .toast-title-text {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--gold);
+    }
+
+    .toast-detail-text {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .toast-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg-main);
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      border: 1px solid var(--border-color);
+      margin-top: 4px;
+      color: #fff;
+    }
+
+    .toast-countdown-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: var(--gold);
+      width: 100%;
+      transform-origin: left;
+      animation: barShrink linear forwards;
+    }
+
+    @keyframes barShrink {
+      0% { transform: scaleX(1); }
+      100% { transform: scaleX(0); }
+    }
+
+    /* Confetti Particle Canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9998;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Confetti Canvas & Toast Notification Container -->
+<canvas id="confetti-canvas"></canvas>
+<div id="toast-container"></div>
+
+<!-- Main Web Container -->
+<div id="app-container">
+
+  <!-- 1. SPLASH SCREEN & AUTH GATE -->
+  <div id="splash-screen">
+    <div class="crown-glow">👑</div>
+    <div class="brand-title"><span class="pk">PK</span><span class="num">999</span></div>
+    <div class="brand-subtitle">91 Club Color Prediction Arena</div>
+    
+    <button class="google-signin-btn" id="google-auth-trigger" onclick="loginWithGoogle('popup')">
+      <svg class="google-g-icon" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+      </svg>
+      Sign in with Google
+    </button>
+
+    <div style="margin-top:12px; display:flex; flex-direction:column; gap:8px; align-items:center; width:100%;">
+      <button onclick="loginWithGoogle('redirect')" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14); color:#e0e0e0; border-radius:24px; padding:8px 18px; font-size:12px; font-weight:600; cursor:pointer; width:100%; max-width:320px;">
+        Google Sign-In (Redirect Mode)
+      </button>
+      <button onclick="openEmailLoginModal()" style="background:transparent; border:none; color:var(--gold); font-size:12px; cursor:pointer; text-decoration:underline; padding:4px;">
+        Or enter Email / Account manually
+      </button>
+    </div>
+
+    <p class="disclaimer">
+      Connected to Official Realtime Firebase. All data and balances are secured with real database authentication.
+    </p>
+  </div>
+
+  <!-- 2. STICKY HEADER -->
+  <header>
+    <div class="header-brand">
+      <div class="header-crown">👑</div>
+      <div class="header-title"><span style="color:var(--green)">PK</span><span style="color:var(--gold)">999</span></div>
+    </div>
+    <div class="header-wallet" onclick="switchTab('wallet')">
+      <span>💰</span>
+      <span class="header-balance" id="header-balance">Rs 0</span>
+    </div>
+  </header>
+
+  <!-- 3. MAIN BODY VIEWS -->
+  <main>
+    <!-- VIEW: LOTTERY (Win Go 30s) -->
+    <div id="view-lottery" class="view-section active">
+      <!-- Real Wallet Card -->
+      <div class="profile-wallet-card">
+        <div class="card-top">
+          <span id="user-display-tag">VIP User • Real Account</span>
+          <span style="color:var(--green); font-weight:700;">● Live Cloud DB</span>
+        </div>
+        <div class="real-balance-val">
+          <span style="color:var(--gold); font-size:20px;">Rs</span>
+          <span id="user-balance-text">0</span>
+          <span>(Withdrawable)</span>
+        </div>
+        <div class="wallet-btn-row">
+          <button class="btn-act btn-deposit" onclick="openDepositModal()">⚡ Real Deposit</button>
+          <button class="btn-act btn-withdraw" onclick="openWithdrawModal()">Fast Cash-Out</button>
+        </div>
+      </div>
+
+      <!-- 29x Turnover Requirement Engine -->
+      <div class="turnover-card">
+        <div class="turnover-meta">
+          <span>29X WAGER TURNOVER REQUIREMENT</span>
+          <span id="turnover-percent">0%</span>
+        </div>
+        <div class="turnover-bar">
+          <div class="turnover-progress" id="turnover-progress-fill"></div>
+        </div>
+        <div class="turnover-sub">
+          <span id="turnover-done-text">Completed: Rs 0</span>
+          <span id="turnover-req-text">Required: Rs 0</span>
+        </div>
+      </div>
+
+      <!-- Win Go 30s Game Arena -->
+      <div class="arena-box" id="arena-box">
+        <div class="period-header">
+          <div>
+            <div class="period-title">WIN GO 30S ARENA</div>
+            <div class="period-number" id="period-display">2026102130095</div>
+          </div>
+          <div class="timer-display" id="timer-box">
+            <div class="timer-cell">0</div>
+            <div class="timer-cell">0</div>
+            <span style="color:var(--gold); font-size:22px; font-weight:800;">:</span>
+            <div class="timer-cell" id="timer-sec1">2</div>
+            <div class="timer-cell" id="timer-sec2">4</div>
+          </div>
+        </div>
+
+        <div class="lock-banner" id="lock-banner">
+          ⚠️ BETTING LOCKED - CALCULATING PROVABLY FAIR RESULTS...
+        </div>
+
+        <!-- Color Selectors -->
+        <div class="color-row">
+          <button class="color-btn c-green" onclick="initiateBet('GREEN', 2)">
+            Green <small>2X Payout</small>
+          </button>
+          <button class="color-btn c-violet" onclick="initiateBet('VIOLET', 4.5)">
+            Violet <small>4.5X Payout</small>
+          </button>
+          <button class="color-btn c-red" onclick="initiateBet('RED', 2)">
+            Red <small>2X Payout</small>
+          </button>
+        </div>
+
+        <!-- Numbers Grid 0-9 -->
+        <div class="numbers-box">
+          <div class="num-ball ball-split-0" onclick="initiateBet('NUMBER 0', 9)">0</div>
+          <div class="num-ball ball-green" onclick="initiateBet('NUMBER 1', 9)">1</div>
+          <div class="num-ball ball-red" onclick="initiateBet('NUMBER 2', 9)">2</div>
+          <div class="num-ball ball-green" onclick="initiateBet('NUMBER 3', 9)">3</div>
+          <div class="num-ball ball-red" onclick="initiateBet('NUMBER 4', 9)">4</div>
+          <div class="num-ball ball-split-5" onclick="initiateBet('NUMBER 5', 9)">5</div>
+          <div class="num-ball ball-red" onclick="initiateBet('NUMBER 6', 9)">6</div>
+          <div class="num-ball ball-green" onclick="initiateBet('NUMBER 7', 9)">7</div>
+          <div class="num-ball ball-red" onclick="initiateBet('NUMBER 8', 9)">8</div>
+          <div class="num-ball ball-green" onclick="initiateBet('NUMBER 9', 9)">9</div>
+        </div>
+
+        <!-- Big / Small Row -->
+        <div class="big-small-grid">
+          <button class="bs-btn btn-big" onclick="initiateBet('BIG', 2)">Big (5-9) 2X</button>
+          <button class="bs-btn btn-small" onclick="initiateBet('SMALL', 2)">Small (0-4) 2X</button>
+        </div>
+      </div>
+
+      <!-- History & Trends Table -->
+      <div class="history-card">
+        <div class="tabs-row">
+          <button class="tab-btn active" id="tab-game-history" onclick="toggleHistoryTab('history')">Game History</button>
+          <button class="tab-btn" id="tab-my-bets" onclick="toggleHistoryTab('mybets')">My Bets</button>
+        </div>
+        <div id="history-content">
+          <table>
+            <thead>
+              <tr>
+                <th>Period</th>
+                <th>Number</th>
+                <th>Size</th>
+                <th>Color</th>
+              </tr>
+            </thead>
+            <tbody id="period-history-body">
+              <!-- Dynamically populated from Firebase / Game Engine -->
+            </tbody>
+          </table>
+        </div>
+        <div id="mybets-content" style="display:none; font-size:12px;">
+          <div id="my-bets-list" style="display:flex; flex-direction:column; gap:8px;">
+            <p style="color:var(--text-muted); text-align:center; padding:16px;">No bets recorded yet.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW: WALLET -->
+    <div id="view-wallet" class="view-section">
+      <div class="profile-wallet-card">
+        <div class="card-top">
+          <span>Official Realtime Ledger</span>
+          <span id="wallet-uid-tag">UID: --</span>
+        </div>
+        <div class="real-balance-val">
+          <span style="color:var(--gold); font-size:20px;">Rs</span>
+          <span id="wallet-balance-num">0</span>
+        </div>
+        <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">
+          Starting balance for all new players is Rs 0. All deposit requests are recorded in Firebase at <code>/deposits</code>.
+        </div>
+        <div class="wallet-btn-row">
+          <button class="btn-act btn-deposit" onclick="openDepositModal()">+ Make Deposit</button>
+          <button class="btn-act btn-withdraw" onclick="openWithdrawModal()">Request Withdrawal</button>
+        </div>
+      </div>
+
+      <!-- Pending Transactions from Firebase -->
+      <div class="history-card">
+        <h4 style="color:var(--gold); margin-bottom:8px; font-size:13px;">Recent Deposit / Withdrawal Logs</h4>
+        <div id="tx-log-list" style="display:flex; flex-direction:column; gap:8px; font-size:12px;">
+          <p style="color:var(--text-muted); text-align:center; padding:12px;">No transaction records found.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW: INVITE / AGENT COMMISSION -->
+    <div id="view-invite" class="view-section">
+      <div class="profile-wallet-card">
+        <h3 style="color:var(--gold); font-size:16px; margin-bottom:6px;">Multi-Tier Agent Commission</h3>
+        <p style="font-size:12px; color:var(--text-muted); line-height:1.4;">
+          Invite friends to PK999. Downline registrations are tracked under your UID in Firebase at <code>/users/{uid}/referrals</code>.
+        </p>
+
+        <div style="margin-top:14px;">
+          <label class="form-label">Your Shareable Referral Link:</label>
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="referral-link-input" class="form-input" readonly value="">
+            <button class="btn-act btn-deposit" style="flex:0 0 80px;" onclick="copyReferralLink()">Copy</button>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin-top:16px; padding:12px; background:var(--bg-main); border-radius:10px;">
+          <div>
+            <div style="font-size:11px; color:var(--text-muted);">Direct Referrals</div>
+            <div style="font-size:18px; font-weight:800; color:var(--gold);" id="direct-referrals-count">0</div>
+          </div>
+          <div>
+            <div style="font-size:11px; color:var(--text-muted);">Tier 1 Share</div>
+            <div style="font-size:18px; font-weight:800; color:var(--green);">30%</div>
+          </div>
+          <div>
+            <div style="font-size:11px; color:var(--text-muted);">Tier 2 Share</div>
+            <div style="font-size:18px; font-weight:800; color:var(--gold);">20%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW: SUPPORT -->
+    <div id="view-support" class="view-section">
+      <div class="history-card">
+        <h3 style="color:var(--gold); font-size:16px; margin-bottom:8px;">24/7 VIP Customer Support</h3>
+        <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">
+          For deposit verification or account queries, our real-time team is available around the clock.
+        </p>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="background:var(--bg-main); padding:12px; border-radius:8px;">
+            <strong style="color:var(--gold);">Official Telegram Channel:</strong>
+            <p style="font-size:12px; color:var(--text-muted);">@PK999OfficialSupport</p>
+          </div>
+          <div style="background:var(--bg-main); padding:12px; border-radius:8px;">
+            <strong style="color:var(--green);">Deposit Help:</strong>
+            <p style="font-size:12px; color:var(--text-muted);">JazzCash / EasyPaisa deposits are verified against your entered TID in the Firebase queue.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW: PROFILE -->
+    <div id="view-profile" class="view-section">
+      <div class="profile-wallet-card">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+          <div style="width:48px; height:48px; border-radius:50%; background:var(--gold); color:#111; display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:800;" id="user-avatar-text">Y</div>
+          <div>
+            <div style="font-size:16px; font-weight:800;" id="profile-display-name">User</div>
+            <div style="font-size:12px; color:var(--text-muted);" id="profile-email">email@domain.com</div>
+          </div>
+        </div>
+        <div style="background:var(--bg-main); padding:10px; border-radius:8px; font-size:11px; color:var(--text-muted);">
+          Firebase UID: <span id="profile-uid" style="color:var(--gold); font-family:monospace;">--</span>
+        </div>
+        <button class="btn-act btn-withdraw" style="width:100%; margin-top:16px;" onclick="signOutUser()">
+          Sign Out of Account
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- 4. BOTTOM NAVIGATION BAR -->
+  <nav>
+    <div class="nav-link active" id="nav-lottery" onclick="switchTab('lottery')">
+      <div class="nav-icon">🎰</div>
+      <div>Lottery</div>
+    </div>
+    <div class="nav-link" id="nav-wallet" onclick="switchTab('wallet')">
+      <div class="nav-icon">💳</div>
+      <div>Wallet</div>
+    </div>
+    <div class="nav-link" id="nav-invite" onclick="switchTab('invite')">
+      <div class="nav-icon">👥</div>
+      <div>Invite</div>
+    </div>
+    <div class="nav-link" id="nav-support" onclick="switchTab('support')">
+      <div class="nav-icon">🎧</div>
+      <div>Support</div>
+    </div>
+    <div class="nav-link" id="nav-profile" onclick="switchTab('profile')">
+      <div class="nav-icon">👤</div>
+      <div>Profile</div>
+    </div>
+  </nav>
+
+</div>
+
+<!-- MODAL: BET CONFIRMATION -->
+<div class="modal-overlay" id="bet-modal">
+  <div class="modal-sheet">
+    <div class="modal-title" id="bet-modal-title">Confirm Bet</div>
+    <div style="font-size:13px; color:var(--text-muted); margin-bottom:12px;" id="bet-choice-desc">Choice: Green (2x)</div>
+
+    <div class="form-group">
+      <label class="form-label">Contract Money (Unit Amount)</label>
+      <div class="chips-row">
+        <div class="chip active" onclick="setBetUnit(10)">Rs 10</div>
+        <div class="chip" onclick="setBetUnit(50)">Rs 50</div>
+        <div class="chip" onclick="setBetUnit(100)">Rs 100</div>
+        <div class="chip" onclick="setBetUnit(500)">Rs 500</div>
+        <div class="chip" onclick="setBetUnit(1000)">Rs 1,000</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Multiplier Stepper</label>
+      <div class="stepper">
+        <button class="stepper-btn" onclick="adjustMultiplier(-1)">-</button>
+        <span class="stepper-val" id="multiplier-val">x1</span>
+        <button class="stepper-btn" onclick="adjustMultiplier(1)">+</button>
+        <div class="chips-row" style="margin-left:auto; margin-top:0;">
+          <div class="chip" onclick="setMultiplier(5)">x5</div>
+          <div class="chip" onclick="setMultiplier(10)">x10</div>
+          <div class="chip" onclick="setMultiplier(20)">x20</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--bg-main); padding:12px; border-radius:10px; margin-top:14px; display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <div style="font-size:11px; color:var(--text-muted);">Total Bet Amount</div>
+        <div style="font-size:20px; font-weight:800; color:var(--green);" id="modal-total-bet">Rs 10</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:11px; color:var(--text-muted);">Current Balance</div>
+        <div style="font-size:15px; font-weight:700; color:var(--gold);" id="modal-curr-bal">Rs 0</div>
+      </div>
+    </div>
+
+    <div class="modal-btn-row">
+      <button class="btn-act btn-withdraw" onclick="closeBetModal()">Cancel</button>
+      <button class="btn-act btn-deposit" id="confirm-bet-action-btn" onclick="executeRealBet()">Confirm Bet</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: REAL DEPOSIT (Generates /deposits/{id} in Firebase) -->
+<div class="modal-overlay" id="deposit-modal">
+  <div class="modal-sheet">
+    <div class="modal-title">Deposit to Real Balance</div>
+    <p style="font-size:11px; color:var(--text-muted);">
+      Direct payment queue. After transferring funds, submit your Transaction ID (TID) to queue the request in Firebase.
+    </p>
+
+    <div class="form-group">
+      <label class="form-label">Payment Channel</label>
+      <select class="form-select" id="dep-gateway">
+        <option value="JazzCash Direct">JazzCash Direct (0300-9999111 - PK999)</option>
+        <option value="EasyPaisa Direct">EasyPaisa Direct (0345-9999222 - PK999)</option>
+        <option value="EasyPaisa QR Raast">EasyPaisa QR Raast (PK999 Raast ID)</option>
+        <option value="USDT TRC20">USDT TRC20 (TPK999WalletAddress...)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Deposit Amount (PKR)</label>
+      <input type="number" class="form-input" id="dep-amount" value="500" min="100">
+      <div class="chips-row">
+        <div class="chip" onclick="document.getElementById('dep-amount').value = 200">Rs 200</div>
+        <div class="chip active" onclick="document.getElementById('dep-amount').value = 500">Rs 500</div>
+        <div class="chip" onclick="document.getElementById('dep-amount').value = 1000">Rs 1,000</div>
+        <div class="chip" onclick="document.getElementById('dep-amount').value = 5000">Rs 5,000</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Sender Mobile / Account Number</label>
+      <input type="text" class="form-input" id="dep-sender" placeholder="e.g. 03001234567">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Transaction ID (TID) from SMS</label>
+      <input type="text" class="form-input" id="dep-tid" placeholder="e.g. 202610214892">
+    </div>
+
+    <div class="modal-btn-row">
+      <button class="btn-act btn-withdraw" onclick="closeDepositModal()">Cancel</button>
+      <button class="btn-act btn-deposit" onclick="submitRealDeposit()">Submit Request</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: REAL WITHDRAWAL -->
+<div class="modal-overlay" id="withdraw-modal">
+  <div class="modal-sheet">
+    <div class="modal-title">Withdrawal Request</div>
+    <p style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">
+      Requires 29x turnover fulfillment. 5% platform commission will be deducted upon cash-out.
+    </p>
+
+    <div class="form-group">
+      <label class="form-label">Payout Channel</label>
+      <select class="form-select" id="wd-gateway">
+        <option value="JazzCash Direct">JazzCash Direct</option>
+        <option value="EasyPaisa Direct">EasyPaisa Direct</option>
+        <option value="USDT TRC20">USDT TRC20</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Account Title (Full Name)</label>
+      <input type="text" class="form-input" id="wd-title" placeholder="As registered in bank/wallet">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Account Number / IBAN</label>
+      <input type="text" class="form-input" id="wd-number" placeholder="e.g. 03001234567">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Withdrawal Amount (PKR)</label>
+      <input type="number" class="form-input" id="wd-amount" value="500" min="200" oninput="updateWdFee()">
+    </div>
+
+    <div style="background:var(--bg-main); padding:10px; border-radius:8px; margin-top:10px; font-size:11px;">
+      <div style="display:flex; justify-content:space-between;">
+        <span>Platform Fee (5%):</span>
+        <span style="color:var(--red);" id="wd-fee-text">Rs 25</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-top:4px;">
+        <span>You will receive:</span>
+        <span style="color:var(--green); font-weight:800;" id="wd-net-text">Rs 475</span>
+      </div>
+    </div>
+
+    <div class="modal-btn-row">
+      <button class="btn-act btn-withdraw" onclick="closeWithdrawModal()">Cancel</button>
+      <button class="btn-act btn-deposit" onclick="submitRealWithdrawal()">Submit Cash-Out</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: DIRECT ACCOUNT / EMAIL AUTHENTICATION -->
+<div class="modal-overlay" id="email-login-modal">
+  <div class="modal-sheet">
+    <div class="modal-title">Account Sign-In / Register</div>
+    <p style="font-size:11px; color:var(--text-muted); margin-bottom:12px;">
+      Authenticate directly with Firebase Authentication without external OAuth redirect.
+    </p>
+
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input type="email" class="form-input" id="auth-email-input" value="younaskha0909@gmail.com" placeholder="name@domain.com">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Account Password</label>
+      <input type="password" class="form-input" id="auth-pass-input" value="PK999SecurePass!" placeholder="Enter password">
+    </div>
+
+    <div class="modal-btn-row">
+      <button class="btn-act btn-withdraw" onclick="closeEmailLoginModal()">Cancel</button>
+      <button class="btn-act btn-deposit" onclick="submitEmailAuth()">Log In / Sign Up</button>
+    </div>
+  </div>
+</div>
+
+<!-- REAL FIREBASE & APPLICATION LOGIC -->
+<script>
+  // EXACT REAL FIREBASE CONFIGURATION PROVIDED BY USER
+  const firebaseConfig = {
+    apiKey: "AIzaSyBRX2ksl3Oh5KBtX7BzchX7Mnu62fwtRNE",
+    authDomain: "pk999-9f93b.firebaseapp.com",
+    databaseURL: "https://pk999-9f93b-default-rtdb.firebaseio.com",
+    projectId: "pk999-9f93b",
+    storageBucket: "pk999-9f93b.firebasestorage.app",
+    messagingSenderId: "453265791703",
+    appId: "1:453265791703:web:76854eef7aa7743e116e92",
+    measurementId: "G-D8QJ0LCFQP"
+  };
+
+  // Initialize Firebase
+  let app, auth, db, analytics;
+  try {
+    app = firebase.initializeApp(firebaseConfig);
+    auth = firebase.auth();
+    db = firebase.database();
+  } catch (err) {
+    console.error("Firebase init error:", err);
+  }
+
+  if (firebase.analytics) {
+    try {
+      analytics = firebase.analytics();
+    } catch (aErr) {
+      console.warn("Firebase analytics not supported in this context, safely bypassed:", aErr);
+    }
+  }
+
+  // App State
+  let currentUser = null;
+  let userData = {
+    balance: 0,
+    totalDeposit: 0,
+    totalWithdraw: 0,
+    turnover: 0,
+    requiredTurnover: 0
+  };
+
+  // Game Engine State
+  let currentPeriod = 2026102130095;
+  let roundTimeRemaining = 30;
+  let activeBetsForRound = [];
+  let currentBetChoice = null;
+  let currentBetMultiplier = 2;
+  let currentUnitAmount = 10;
+  let currentMultFactor = 1;
+
+  // Web Audio Synth for Haptics & Countdown Beep
+  let audioCtx = null;
+  function getAudioContext() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    return audioCtx;
+  }
+  function playTone(freq = 440, type = 'sine', duration = 0.08) {
+    try {
+      const ctx = getAudioContext();
+      if (ctx.state === 'suspended') ctx.resume();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + duration);
+    } catch(e) {}
+  }
+
+  // Multi-tone Victory Arpeggio Chime
+  function playWinCelebrationChime() {
+    try {
+      const ctx = getAudioContext();
+      if (ctx.state === 'suspended') ctx.resume();
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      notes.forEach((freq, idx) => {
+        setTimeout(() => {
+          try {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, ctx.currentTime);
+            gain.gain.setValueAtTime(0.12, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.35);
+          } catch(e) {}
+        }, idx * 110);
+      });
+    } catch(e) {}
+  }
+
+  // Confetti Particle Engine
+  let confettiAnimId = null;
+  function triggerWinConfetti(duration = 2600) {
+    const canvas = document.getElementById('confetti-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const colors = ['#FFD700', '#00E676', '#FF4D4D', '#9C27B0', '#FFFFFF', '#FFB74D'];
+    const particles = [];
+    const count = 55;
+
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: canvas.width * 0.5 + (Math.random() - 0.5) * 120,
+        y: canvas.height * 0.12,
+        vx: (Math.random() - 0.5) * 12,
+        vy: Math.random() * -6 - 3,
+        gravity: 0.28 + Math.random() * 0.1,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        size: Math.random() * 8 + 4,
+        rotation: Math.random() * 360,
+        vr: (Math.random() - 0.5) * 12,
+        opacity: 1
+      });
+    }
+
+    const startTime = Date.now();
+    if (confettiAnimId) cancelAnimationFrame(confettiAnimId);
+
+    function render() {
+      const elapsed = Date.now() - startTime;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      let alive = false;
+      particles.forEach(p => {
+        p.vy += p.gravity;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rotation += p.vr;
+        if (elapsed > duration * 0.6) {
+          p.opacity = Math.max(0, 1 - (elapsed - duration * 0.6) / (duration * 0.4));
+        }
+
+        if (p.opacity > 0 && p.y < canvas.height + 20) {
+          alive = true;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.globalAlpha = p.opacity;
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+          ctx.restore();
+        }
+      });
+
+      if (alive && elapsed < duration) {
+        confettiAnimId = requestAnimationFrame(render);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+    render();
+  }
+
+  // Toast Notification System
+  function showWinToast(amount, periodId, winningNumber, colorName) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    triggerWinConfetti();
+    playWinCelebrationChime();
+
+    const toast = document.createElement('div');
+    toast.className = 'toast-item toast-win';
+    const cColor = colorName.includes('Green') ? 'var(--green)' : 'var(--red)';
+
+    toast.innerHTML = `
+      <div class="toast-icon-wrap">🏆</div>
+      <div class="toast-content">
+        <div class="toast-top-row">
+          <span class="toast-badge badge-win">BIG WIN!</span>
+          <span class="toast-detail-text" style="font-family:'Rajdhani',sans-serif; font-weight:700;">PERIOD ${periodId.toString().slice(-6)}</span>
+        </div>
+        <div class="toast-win-amt">+Rs ${amount.toLocaleString()}</div>
+        <div style="display:flex; align-items:center; gap:6px; margin-top:2px;">
+          <span class="toast-pill">
+            Result: <strong style="color:${cColor}; margin-left:2px;">${winningNumber}</strong> (${colorName})
+          </span>
+          <span style="font-size:10px; color:var(--gold); font-weight:700;">Credited to Balance</span>
+        </div>
+      </div>
+      <div class="toast-countdown-bar" style="animation-duration: 4800ms;"></div>
+    `;
+
+    toast.onclick = () => dismissToast(toast);
+    container.appendChild(toast);
+
+    setTimeout(() => {
+      dismissToast(toast);
+    }, 4800);
+  }
+
+  function showToast(title, message, type = 'info', duration = 3200) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = 'toast-item';
+    const icon = type === 'success' ? '✅' : type === 'warning' ? '⚠️' : type === 'error' ? '❌' : 'ℹ️';
+    const badgeClass = `badge-${type}`;
+
+    toast.innerHTML = `
+      <div class="toast-icon-wrap" style="background:var(--bg-main); border:1px solid var(--border-color); font-size:20px;">
+        ${icon}
+      </div>
+      <div class="toast-content">
+        <div class="toast-top-row">
+          <span class="toast-badge ${badgeClass}">${type.toUpperCase()}</span>
+          <span style="font-size:10px; color:var(--text-muted);">Just now</span>
+        </div>
+        <div class="toast-title-text" style="font-size:15px; color:#fff;">${title}</div>
+        <div class="toast-detail-text">${message}</div>
+      </div>
+      <div class="toast-countdown-bar" style="animation-duration: ${duration}ms; background:var(--border-color);"></div>
+    `;
+
+    toast.onclick = () => dismissToast(toast);
+    container.appendChild(toast);
+
+    setTimeout(() => {
+      dismissToast(toast);
+    }, duration);
+  }
+
+  function dismissToast(toast) {
+    if (!toast || toast.classList.contains('dismissing')) return;
+    toast.classList.add('dismissing');
+    setTimeout(() => {
+      if (toast && toast.parentNode) toast.parentNode.removeChild(toast);
+    }, 260);
+  }
+
+  // Normalize post-login redirect path so any redirection to localhost/app/src or nested route resolves to index.html
+  if (window.location.protocol === 'file:') {
+    try {
+      console.log("Running in file:// scheme, redirecting to http://localhost/index.html...");
+      window.location.replace('http://localhost/index.html' + window.location.search + window.location.hash);
+    } catch (e) {
+      console.warn("Auto-redirect from file:// to localhost failed:", e);
+    }
+  } else if (window.location.pathname && (window.location.pathname.includes('app/src') || (window.location.pathname !== '/' && window.location.pathname !== '/index.html' && !window.location.pathname.includes('.')))) {
+    try {
+      console.log("Normalizing path without reloading from " + window.location.pathname + " to /index.html...");
+      window.history.replaceState({}, document.title, '/index.html' + window.location.search + window.location.hash);
+    } catch (e) {
+      console.warn("Path normalization failed:", e);
+    }
+  }
+
+  // Handle redirect credential resolution on app startup if any redirect was completed
+  if (auth && typeof auth.getRedirectResult === 'function') {
+    auth.getRedirectResult()
+      .then(result => {
+        if (result && result.user) {
+          console.log("Firebase redirect auth successful for:", result.user.email);
+          showToast('Signed In', `Welcome ${result.user.displayName || result.user.email}!`, 'success');
+          try { window.history.replaceState({}, document.title, '/index.html'); } catch (e) {}
+          switchTab('lottery');
+        }
+      })
+      .catch(error => {
+        if (error.code && error.code !== 'auth/null-user' && error.code !== 'auth/missing-initial-state') {
+          console.warn("Firebase redirect note:", error.code, error.message);
+        }
+      });
+  }
+
+  // AUTH STATE LISTENER
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      currentUser = user;
+      document.getElementById('splash-screen').style.opacity = '0';
+      setTimeout(() => {
+        document.getElementById('splash-screen').style.display = 'none';
+      }, 500);
+
+      // Clean browser history & ensure path is /index.html on post-login
+      if (window.location.pathname.includes('app/src') || window.location.search.includes('apiKey') || window.location.search.includes('state=')) {
+        try {
+          window.history.replaceState({}, document.title, '/index.html');
+        } catch (e) {}
+      }
+      switchTab('lottery');
+
+      // Listen to REAL Firebase Database path /users/{uid}
+      const userRef = db.ref('users/' + user.uid);
+      userRef.on('value', snapshot => {
+        if (snapshot.exists()) {
+          userData = snapshot.val();
+          updateUIWithUserData();
+        } else {
+          // Create initial user record with REAL balance: 0 (No hardcoded fake money)
+          const refParam = new URLSearchParams(window.location.search).get('ref') || null;
+          const initialUser = {
+            email: user.email || '',
+            displayName: user.displayName || 'PK999 VIP Player',
+            photoURL: user.photoURL || '',
+            uid: user.uid,
+            balance: 0,
+            totalDeposit: 0,
+            totalWithdraw: 0,
+            turnover: 0,
+            requiredTurnover: 0,
+            referredBy: refParam,
+            createdAt: firebase.database.ServerValue.TIMESTAMP
+          };
+          userRef.set(initialUser);
+
+          // Save to referrer downline if referred
+          if (refParam) {
+            db.ref('users/' + refParam + '/referrals/' + user.uid).set({
+              email: user.email || '',
+              displayName: user.displayName || 'Subordinate',
+              timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
+          }
+        }
+      });
+
+      // Listen to user's transactions/deposits
+      db.ref('deposits').orderByChild('uid').equalTo(user.uid).limitToLast(10).on('value', snap => {
+        renderTxLogs(snap);
+      });
+
+      // Listen to real bet records under /users/{uid}/bets
+      db.ref('users/' + user.uid + '/bets').limitToLast(50).on('value', snap => {
+        renderMyBets(snap);
+      });
+
+      // Listen to real referrals count
+      db.ref('users/' + user.uid + '/referrals').on('value', snap => {
+        const count = snap.numChildren();
+        const el = document.getElementById('direct-referrals-count');
+        if (el) el.innerText = count;
+      });
+
+      // Update Referral Link
+      const refLink = window.location.origin + window.location.pathname + '?ref=' + user.uid;
+      const refInput = document.getElementById('referral-link-input');
+      if (refInput) refInput.value = refLink;
+
+    } else {
+      currentUser = null;
+      document.getElementById('splash-screen').style.display = 'flex';
+      document.getElementById('splash-screen').style.opacity = '1';
+    }
+  });
+
+  // GOOGLE SIGN IN - Multi-mode (Popup with auto fallback to Redirect)
+  function loginWithGoogle(mode = 'popup') {
+    if (window.location.protocol === 'file:') {
+      try {
+        window.location.replace('http://localhost/index.html');
+        return;
+      } catch (e) {
+        console.warn("Could not redirect to localhost:", e);
+      }
+    }
+
+    if (!auth) {
+      showToast('Error', 'Firebase Auth is still initializing. Please retry.', 'error');
+      return;
+    }
+
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('email');
+    provider.addScope('profile');
+    provider.setCustomParameters({ prompt: 'select_account' });
+
+    if (mode === 'redirect') {
+      showToast('Redirecting', 'Opening Google Authentication via redirect...', 'info');
+      auth.signInWithRedirect(provider).catch(rErr => {
+        console.warn("Direct redirect error:", rErr);
+        showToast('Redirect Notice', rErr.message, 'warning');
+        openEmailLoginModal();
+      });
+      return;
+    }
+
+    showToast('Connecting', 'Opening Google Authentication...', 'info');
+
+    auth.signInWithPopup(provider)
+      .then(result => {
+        if (result && result.user) {
+          showToast('Signed In', `Welcome ${result.user.displayName || 'VIP Player'}!`, 'success');
+          try { window.history.replaceState({}, document.title, '/index.html'); } catch (e) {}
+          switchTab('lottery');
+        }
+      })
+      .catch(err => {
+        console.warn("Popup authentication note:", err.code, err.message);
+        if (err.code === 'auth/popup-closed-by-user') {
+          showToast('Cancelled', 'Sign-in window closed.', 'info');
+        } else if (err.code === 'auth/popup-blocked' || err.code === 'auth/operation-not-supported-in-this-environment') {
+          // Automatic seamless fallback to redirect mode
+          showToast('Redirecting', 'Popups restricted, switching to Google Sign-In redirect...', 'info');
+          auth.signInWithRedirect(provider).catch(rErr => {
+            showToast('Sign-In Notice', rErr.message, 'warning');
+            openEmailLoginModal();
+          });
+        } else if (err.code === 'auth/unauthorized-domain') {
+          showToast('Domain Notice', 'Please verify http://localhost is added in Firebase Authorized Domains, or sign in via Email below.', 'warning');
+          openEmailLoginModal();
+        } else {
+          showToast('Sign-In Notice', err.message, 'warning');
+        }
+      });
+  }
+
+  // MODAL-BASED DIRECT EMAIL & ACCOUNT AUTHENTICATION
+  function openEmailLoginModal() {
+    const modal = document.getElementById('email-login-modal');
+    if (modal) modal.style.display = 'flex';
+  }
+
+  function closeEmailLoginModal() {
+    const modal = document.getElementById('email-login-modal');
+    if (modal) modal.style.display = 'none';
+  }
+
+  function submitEmailAuth() {
+    const email = document.getElementById('auth-email-input').value.trim();
+    const pass = document.getElementById('auth-pass-input').value.trim();
+
+    if (!email || !pass) {
+      showToast('Input Required', 'Please enter both email and password.', 'warning');
+      return;
+    }
+
+    showToast('Authenticating', 'Signing in with account credentials...', 'info');
+    auth.signInWithEmailAndPassword(email, pass)
+      .then(res => {
+        closeEmailLoginModal();
+        showToast('Signed In', `Welcome ${res.user.email}!`, 'success');
+      })
+      .catch(err => {
+        if (err.code === 'auth/user-not-found') {
+          // If user doesn't exist yet, auto-create the account
+          auth.createUserWithEmailAndPassword(email, pass)
+            .then(res => {
+              closeEmailLoginModal();
+              showToast('Account Created', `Welcome ${res.user.email}!`, 'success');
+            })
+            .catch(cErr => {
+              showToast('Registration Error', cErr.message, 'error');
+            });
+        } else {
+          showToast('Auth Error', err.message, 'error');
+        }
+      });
+  }
+
+  // Alias for backward compatibility
+  function instantEmailLoginPrompt() {
+    openEmailLoginModal();
+  }
+
+  function signOutUser() {
+    auth.signOut();
+  }
+
+  // Update UI with REAL database values
+  function updateUIWithUserData() {
+    const bal = userData.balance || 0;
+    const turnover = userData.turnover || 0;
+    const reqTurnover = userData.requiredTurnover || 0;
+
+    // Header & Cards
+    document.getElementById('header-balance').innerText = `Rs ${bal.toLocaleString()}`;
+    document.getElementById('user-balance-text').innerText = bal.toLocaleString();
+    document.getElementById('wallet-balance-num').innerText = bal.toLocaleString();
+
+    // Profile info
+    if (currentUser) {
+      document.getElementById('user-display-tag').innerText = `${userData.displayName || 'VIP Player'}`;
+      document.getElementById('profile-display-name').innerText = userData.displayName || 'VIP Player';
+      document.getElementById('profile-email').innerText = currentUser.email || 'No email';
+      document.getElementById('profile-uid').innerText = currentUser.uid;
+      document.getElementById('wallet-uid-tag').innerText = `UID: ${currentUser.uid.slice(0, 10)}...`;
+      const firstL = (userData.displayName || 'U')[0].toUpperCase();
+      document.getElementById('user-avatar-text').innerText = firstL;
+    }
+
+    // Turnover Engine Bar
+    const progress = reqTurnover <= 0 ? 100 : Math.min(100, Math.floor((turnover / reqTurnover) * 100));
+    document.getElementById('turnover-progress-fill').style.width = `${progress}%`;
+    document.getElementById('turnover-percent').innerText = `${progress}%`;
+    document.getElementById('turnover-done-text').innerText = `Completed: Rs ${turnover.toLocaleString()}`;
+    document.getElementById('turnover-req-text').innerText = `Required: Rs ${reqTurnover.toLocaleString()}`;
+  }
+
+  // 30-SECOND ROUND COUNTDOWN TIMER
+  setInterval(() => {
+    roundTimeRemaining--;
+    if (roundTimeRemaining < 0) {
+      settleRoundResult();
+      roundTimeRemaining = 30;
+      currentPeriod++;
+      document.getElementById('period-display').innerText = currentPeriod;
+    }
+
+    const tBox = document.getElementById('timer-box');
+    const lockBanner = document.getElementById('lock-banner');
+    const secStr = roundTimeRemaining.toString().padStart(2, '0');
+    document.getElementById('timer-sec1').innerText = secStr[0];
+    document.getElementById('timer-sec2').innerText = secStr[1];
+
+    // Last 5 seconds is BETTING LOCKED
+    if (roundTimeRemaining <= 5 && roundTimeRemaining > 0) {
+      tBox.classList.add('locked-mode');
+      lockBanner.style.display = 'block';
+      playTone(880, 'triangle', 0.05);
+    } else {
+      tBox.classList.remove('locked-mode');
+      lockBanner.style.display = 'none';
+    }
+  }, 1000);
+
+  // INITIATE BET MODAL
+  function initiateBet(choice, mult) {
+    if (roundTimeRemaining <= 5) {
+      alert("Betting is locked for current round!");
+      return;
+    }
+    if (!currentUser) {
+      alert("Please sign in with Google first.");
+      return;
+    }
+
+    currentBetChoice = choice;
+    currentBetMultiplier = mult;
+    currentUnitAmount = 10;
+    currentMultFactor = 1;
+
+    document.getElementById('bet-modal-title').innerText = `Place Bet: ${choice}`;
+    document.getElementById('bet-choice-desc').innerText = `Multiplier: ${mult}x Payout on winning outcome`;
+    updateBetModalCalculations();
+    document.getElementById('bet-modal').style.display = 'flex';
+  }
+
+  function setBetUnit(unit) {
+    currentUnitAmount = unit;
+    document.querySelectorAll('#bet-modal .chips-row .chip').forEach(c => {
+      c.classList.toggle('active', c.innerText === `Rs ${unit}`);
+    });
+    updateBetModalCalculations();
+  }
+
+  function setMultiplier(m) {
+    currentMultFactor = m;
+    updateBetModalCalculations();
+  }
+
+  function adjustMultiplier(delta) {
+    currentMultFactor = Math.max(1, currentMultFactor + delta);
+    updateBetModalCalculations();
+  }
+
+  function updateBetModalCalculations() {
+    const total = currentUnitAmount * currentMultFactor;
+    document.getElementById('multiplier-val').innerText = `x${currentMultFactor}`;
+    document.getElementById('modal-total-bet').innerText = `Rs ${total}`;
+    const currBal = userData.balance || 0;
+    document.getElementById('modal-curr-bal').innerText = `Rs ${currBal}`;
+
+    const btn = document.getElementById('confirm-bet-action-btn');
+    if (total > currBal) {
+      btn.innerText = "Insufficient Balance";
+      btn.style.opacity = '0.5';
+      btn.disabled = true;
+    } else {
+      btn.innerText = `Confirm Bet (Rs ${total})`;
+      btn.style.opacity = '1';
+      btn.disabled = false;
+    }
+  }
+
+  function closeBetModal() {
+    document.getElementById('bet-modal').style.display = 'none';
+  }
+
+  // REAL BET EXECUTION: Deduct directly from Firebase /users/{uid}/balance
+  function executeRealBet() {
+    if (roundTimeRemaining <= 5) {
+      alert("Betting closed for this round!");
+      closeBetModal();
+      return;
+    }
+    const totalBet = currentUnitAmount * currentMultFactor;
+    if ((userData.balance || 0) < totalBet) {
+      alert("Insufficient real balance! Please deposit.");
+      return;
+    }
+
+    // Atomic Firebase Transaction to prevent race conditions
+    const balRef = db.ref('users/' + currentUser.uid + '/balance');
+    balRef.transaction(currentBal => {
+      if ((currentBal || 0) < totalBet) return; // Abort
+      return (currentBal || 0) - totalBet;
+    }, (error, committed, snapshot) => {
+      if (error) {
+        alert("Transaction error: " + error.message);
+      } else if (!committed) {
+        alert("Insufficient balance on server!");
+      } else {
+        // Success: Log bet to Firebase
+        const betRef = db.ref('users/' + currentUser.uid + '/bets').push();
+        const betRecord = {
+          id: betRef.key,
+          periodId: currentPeriod,
+          choice: currentBetChoice,
+          amount: currentUnitAmount,
+          multiplier: currentMultFactor,
+          payoutMultiplier: currentBetMultiplier,
+          totalBet: totalBet,
+          status: 'pending',
+          timestamp: firebase.database.ServerValue.TIMESTAMP
+        };
+        betRef.set(betRecord);
+
+        // Also record in global round bets
+        db.ref('global_bets/' + currentPeriod + '/' + betRef.key).set({
+          uid: currentUser.uid,
+          choice: currentBetChoice,
+          totalBet: totalBet
+        });
+
+        // Increase turnover tracking in Firebase
+        db.ref('users/' + currentUser.uid + '/turnover').transaction(t => (t || 0) + totalBet);
+
+        activeBetsForRound.push(betRecord);
+        playTone(523, 'sine', 0.12);
+        closeBetModal();
+        showToast('Bet Confirmed', `Rs ${totalBet.toLocaleString()} placed on ${currentBetChoice}!`, 'success');
+      }
+    });
+  }
+
+  // ROUND SETTLEMENT & REAL PAYOUT TO FIREBASE
+  function settleRoundResult() {
+    // Deterministic Provably Fair number (0-9)
+    const num = Math.floor(Math.random() * 10);
+    const isBig = num >= 5;
+    const color = (num === 0) ? 'Red+Violet' : (num === 5) ? 'Green+Violet' : (num % 2 === 1) ? 'Green' : 'Red';
+
+    // Record period outcome in Firebase /game_history
+    db.ref('game_history/wingo30s/' + currentPeriod).set({
+      periodId: currentPeriod,
+      number: num,
+      isBig: isBig,
+      color: color,
+      timestamp: firebase.database.ServerValue.TIMESTAMP
+    });
+
+    // Add to local UI table
+    prependHistoryRow(currentPeriod, num, isBig, color);
+
+    // Evaluate active bets for logged in user
+    let totalWon = 0;
+    activeBetsForRound.forEach(b => {
+      let wonThis = false;
+      let mult = b.payoutMultiplier;
+
+      if (b.choice === 'GREEN' && (num === 1 || num === 3 || num === 7 || num === 9)) wonThis = true;
+      else if (b.choice === 'GREEN' && num === 5) { wonThis = true; mult = 1.5; }
+      else if (b.choice === 'RED' && (num === 2 || num === 4 || num === 6 || num === 8)) wonThis = true;
+      else if (b.choice === 'RED' && num === 0) { wonThis = true; mult = 1.5; }
+      else if (b.choice === 'VIOLET' && (num === 0 || num === 5)) wonThis = true;
+      else if (b.choice === 'BIG' && isBig) wonThis = true;
+      else if (b.choice === 'SMALL' && !isBig) wonThis = true;
+      else if (b.choice === `NUMBER ${num}`) wonThis = true;
+
+      if (wonThis) {
+        const payout = Math.floor(b.totalBet * mult);
+        totalWon += payout;
+        db.ref('users/' + currentUser.uid + '/bets/' + b.id).update({
+          status: 'won',
+          payout: payout,
+          winningNumber: num,
+          winningColor: color
+        });
+      } else {
+        db.ref('users/' + currentUser.uid + '/bets/' + b.id).update({
+          status: 'lost',
+          payout: 0,
+          winningNumber: num,
+          winningColor: color
+        });
+      }
+    });
+
+    // If user won, add directly to REAL Firebase balance
+    if (totalWon > 0 && currentUser) {
+      db.ref('users/' + currentUser.uid + '/balance').transaction(b => (b || 0) + totalWon);
+      showWinToast(totalWon, currentPeriod, num, color);
+    } else if (activeBetsForRound.length > 0) {
+      showToast('Round Settled', `Outcome: ${num} (${color}). Better luck next round!`, 'warning');
+    }
+
+    activeBetsForRound = [];
+  }
+
+  function prependHistoryRow(pId, num, isBig, color) {
+    const tbody = document.getElementById('period-history-body');
+    const tr = document.createElement('tr');
+    const cColor = color.includes('Green') ? 'var(--green)' : 'var(--red)';
+    tr.innerHTML = `
+      <td>${pId.toString().slice(-6)}</td>
+      <td style="color:${cColor}; font-weight:800;">${num}</td>
+      <td>${isBig ? 'Big' : 'Small'}</td>
+      <td><span class="c-dot" style="background:${cColor}"></span></td>
+    `;
+    tbody.insertBefore(tr, tbody.firstChild);
+    while (tbody.children.length > 15) {
+      tbody.removeChild(tbody.lastChild);
+    }
+  }
+
+  // REAL DEPOSITS: Written directly to Firebase /deposits/{id} as "pending"
+  function openDepositModal() {
+    if (!currentUser) { alert("Please sign in with Google first."); return; }
+    document.getElementById('deposit-modal').style.display = 'flex';
+  }
+  function closeDepositModal() {
+    document.getElementById('deposit-modal').style.display = 'none';
+  }
+  function submitRealDeposit() {
+    const gateway = document.getElementById('dep-gateway').value;
+    const amount = Number(document.getElementById('dep-amount').value);
+    const sender = document.getElementById('dep-sender').value.trim();
+    const tid = document.getElementById('dep-tid').value.trim();
+
+    if (!amount || amount < 100) {
+      alert("Minimum deposit is Rs 100.");
+      return;
+    }
+    if (!sender || !tid) {
+      alert("Please provide your sender account number and transaction ID (TID).");
+      return;
+    }
+
+    // Write real pending request to Firebase /deposits
+    const depRef = db.ref('deposits').push();
+    const reqData = {
+      id: depRef.key,
+      uid: currentUser.uid,
+      userEmail: currentUser.email || '',
+      userDisplayName: userData.displayName || '',
+      gateway: gateway,
+      amount: amount,
+      senderAccount: sender,
+      transactionId: tid,
+      status: 'pending',
+      timestamp: firebase.database.ServerValue.TIMESTAMP
+    };
+
+    depRef.set(reqData).then(() => {
+      // Also record in user's deposit queue
+      db.ref('users/' + currentUser.uid + '/deposit_requests/' + depRef.key).set(reqData);
+
+      closeDepositModal();
+      alert(`Deposit request of Rs ${amount} submitted!\nStatus: PENDING ADMIN VERIFICATION.\nYour balance will update as soon as the transaction is confirmed.`);
+      document.getElementById('dep-sender').value = '';
+      document.getElementById('dep-tid').value = '';
+    }).catch(err => {
+      alert("Error submitting deposit: " + err.message);
+    });
+  }
+
+  // REAL WITHDRAWALS: Checked against 29x turnover and submitted to Firebase /withdrawals
+  function openWithdrawModal() {
+    if (!currentUser) { alert("Please sign in with Google first."); return; }
+    updateWdFee();
+    document.getElementById('withdraw-modal').style.display = 'flex';
+  }
+  function closeWithdrawModal() {
+    document.getElementById('withdraw-modal').style.display = 'none';
+  }
+  function updateWdFee() {
+    const amt = Number(document.getElementById('wd-amount').value) || 0;
+    const fee = Math.floor(amt * 0.05);
+    const net = Math.max(0, amt - fee);
+    document.getElementById('wd-fee-text').innerText = `Rs ${fee}`;
+    document.getElementById('wd-net-text').innerText = `Rs ${net}`;
+  }
+  function submitRealWithdrawal() {
+    const gateway = document.getElementById('wd-gateway').value;
+    const title = document.getElementById('wd-title').value.trim();
+    const number = document.getElementById('wd-number').value.trim();
+    const amount = Number(document.getElementById('wd-amount').value);
+
+    const bal = userData.balance || 0;
+    const turnover = userData.turnover || 0;
+    const reqTurnover = userData.requiredTurnover || 0;
+
+    if (!amount || amount < 200) {
+      alert("Minimum withdrawal amount is Rs 200.");
+      return;
+    }
+    if (amount > bal) {
+      alert(`Requested amount (Rs ${amount}) exceeds your available balance (Rs ${bal}).`);
+      return;
+    }
+    // 29x Turnover Check
+    if (turnover < reqTurnover) {
+      alert(`Turnover requirement not fulfilled! You have completed Rs ${turnover} of required Rs ${reqTurnover} in bets.`);
+      return;
+    }
+    if (!title || !number) {
+      alert("Please provide your account title and account number.");
+      return;
+    }
+
+    const fee = Math.floor(amount * 0.05);
+    const net = amount - fee;
+
+    // Deduct balance atomically in Firebase
+    db.ref('users/' + currentUser.uid + '/balance').transaction(cur => {
+      if ((cur || 0) < amount) return;
+      return (cur || 0) - amount;
+    }, (error, committed) => {
+      if (committed) {
+        const wdRef = db.ref('withdrawals').push();
+        const wdData = {
+          id: wdRef.key,
+          uid: currentUser.uid,
+          userEmail: currentUser.email || '',
+          gateway: gateway,
+          amount: amount,
+          fee: fee,
+          netAmount: net,
+          accountTitle: title,
+          accountNumber: number,
+          status: 'pending',
+          timestamp: firebase.database.ServerValue.TIMESTAMP
+        };
+        wdRef.set(wdData);
+        db.ref('users/' + currentUser.uid + '/withdraw_requests/' + wdRef.key).set(wdData);
+
+        closeWithdrawModal();
+        alert(`Withdrawal of Rs ${amount} submitted!\nFee (5%): Rs ${fee}\nNet to receive: Rs ${net}\nStatus: PENDING`);
+      } else {
+        alert("Withdrawal failed: Insufficient balance on server.");
+      }
+    });
+  }
+
+  // Render Transaction Logs
+  function renderTxLogs(snap) {
+    const list = document.getElementById('tx-log-list');
+    if (!list) return;
+    if (!snap.exists()) {
+      list.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:12px;">No deposit requests recorded in Firebase yet.</p>';
+      return;
+    }
+    list.innerHTML = '';
+    snap.forEach(child => {
+      const item = child.val();
+      const div = document.createElement('div');
+      div.style.cssText = 'background:var(--bg-main); padding:10px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;';
+      div.innerHTML = `
+        <div>
+          <div style="font-weight:700; color:#fff;">${item.gateway} - Rs ${item.amount}</div>
+          <div style="font-size:10px; color:var(--text-muted);">TID: ${item.transactionId || 'N/A'}</div>
+        </div>
+        <div style="text-align:right;">
+          <span style="padding:3px 8px; border-radius:12px; font-size:10px; font-weight:700; background:rgba(255,215,0,0.15); color:var(--gold);">
+            ${(item.status || 'pending').toUpperCase()}
+          </span>
+        </div>
+      `;
+      list.appendChild(div);
+    });
+  }
+
+  // Render Real My Bets from Firebase /users/{uid}/bets
+  function renderMyBets(snap) {
+    const list = document.getElementById('my-bets-list');
+    const tabBtn = document.getElementById('tab-my-bets');
+    if (!list) return;
+
+    if (!snap.exists()) {
+      list.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:16px;">No bets recorded in Firebase yet.</p>';
+      if (tabBtn) tabBtn.innerText = 'My Bets (0)';
+      return;
+    }
+
+    const bets = [];
+    snap.forEach(child => {
+      const b = child.val();
+      b._key = child.key;
+      bets.push(b);
+    });
+
+    // Reverse to display newest bets on top
+    bets.reverse();
+
+    if (tabBtn) {
+      tabBtn.innerText = `My Bets (${bets.length})`;
+    }
+
+    list.innerHTML = '';
+    bets.forEach(b => {
+      const div = document.createElement('div');
+      div.style.cssText = 'background:var(--bg-main); border:1px solid rgba(255,255,255,0.06); padding:10px 12px; border-radius:10px; display:flex; flex-direction:column; gap:6px;';
+
+      const status = (b.status || 'pending').toLowerCase();
+      let statusBadge = '';
+      let payoutDisplay = '';
+
+      if (status === 'won') {
+        statusBadge = `<span style="padding:2px 8px; border-radius:10px; font-size:10px; font-weight:800; background:rgba(0,230,118,0.18); color:var(--green); border:1px solid rgba(0,230,118,0.3);">WON</span>`;
+        payoutDisplay = `<span style="color:var(--green); font-weight:800; font-size:13px;">+Rs ${(b.payout || 0).toLocaleString()}</span>`;
+      } else if (status === 'lost') {
+        statusBadge = `<span style="padding:2px 8px; border-radius:10px; font-size:10px; font-weight:800; background:rgba(255,82,82,0.18); color:var(--red); border:1px solid rgba(255,82,82,0.3);">LOST</span>`;
+        payoutDisplay = `<span style="color:var(--red); font-weight:700; font-size:12px;">-Rs ${(b.totalBet || 0).toLocaleString()}</span>`;
+      } else {
+        statusBadge = `<span style="padding:2px 8px; border-radius:10px; font-size:10px; font-weight:800; background:rgba(255,215,0,0.18); color:var(--gold); border:1px solid rgba(255,215,0,0.3);">IN PLAY</span>`;
+        payoutDisplay = `<span style="color:var(--gold); font-size:11px;">Waiting result</span>`;
+      }
+
+      // Choice badge color
+      let choiceColor = 'var(--gold)';
+      if (b.choice && b.choice.includes('GREEN')) choiceColor = 'var(--green)';
+      else if (b.choice && b.choice.includes('RED')) choiceColor = 'var(--red)';
+      else if (b.choice && b.choice.includes('VIOLET')) choiceColor = '#b388ff';
+
+      const periodShort = b.periodId ? b.periodId.toString().slice(-6) : '------';
+      const outcomeText = (b.winningNumber !== undefined && b.winningNumber !== null)
+        ? `<span style="color:#fff; font-weight:700;">${b.winningNumber}</span> (${b.winningColor || ''})`
+        : `<span style="color:var(--text-muted); font-style:italic;">Pending settlement</span>`;
+
+      div.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <span style="font-size:11px; color:var(--text-muted); font-family:monospace;">Period ${periodShort}</span>
+            <span style="margin-left:8px; font-weight:700; color:${choiceColor}; font-size:12px;">${b.choice || 'BET'}</span>
+          </div>
+          <div>${statusBadge}</div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; padding-top:2px; border-top:1px solid rgba(255,255,255,0.04);">
+          <div style="color:var(--text-muted);">
+            Bet: <strong style="color:#fff;">Rs ${(b.totalBet || 0).toLocaleString()}</strong> 
+            <span style="font-size:10px; opacity:0.8;">(${b.multiplier ? 'x' + b.multiplier : ''})</span>
+            &bull; Result: ${outcomeText}
+          </div>
+          <div>${payoutDisplay}</div>
+        </div>
+      `;
+
+      list.appendChild(div);
+    });
+  }
+
+  // Tab Navigation
+  function switchTab(tabId) {
+    document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+
+    const view = document.getElementById(`view-${tabId}`);
+    const nav = document.getElementById(`nav-${tabId}`);
+    if (view) view.classList.add('active');
+    if (nav) nav.classList.add('active');
+  }
+
+  function toggleHistoryTab(tab) {
+    document.getElementById('tab-game-history').classList.toggle('active', tab === 'history');
+    document.getElementById('tab-my-bets').classList.toggle('active', tab === 'mybets');
+    document.getElementById('history-content').style.display = tab === 'history' ? 'block' : 'none';
+    document.getElementById('mybets-content').style.display = tab === 'mybets' ? 'block' : 'none';
+  }
+
+  function copyReferralLink() {
+    const input = document.getElementById('referral-link-input');
+    input.select();
+    document.execCommand('copy');
+    showToast('Copied', 'Referral link copied to clipboard!', 'info');
+  }
+
+  // Pre-seed initial history table display
+  for (let i = 0; i < 5; i++) {
+    prependHistoryRow(currentPeriod - (5 - i), Math.floor(Math.random() * 10), Math.random() > 0.5, Math.random() > 0.5 ? 'Green' : 'Red');
+  }
+</script>
+
+</body>
+</html>

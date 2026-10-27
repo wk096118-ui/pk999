@@ -603,9 +603,198 @@
     /* Views Switching */
     .view-section { display: none; }
     .view-section.active { display: block; }
+
+    /* Visual Toast Notification System */
+    #toast-container {
+      position: fixed;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 28px);
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 10000;
+      pointer-events: none;
+    }
+
+    .toast-item {
+      pointer-events: auto;
+      background: rgba(30, 30, 46, 0.95);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.7), 0 0 15px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      overflow: hidden;
+      animation: toastIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+      cursor: pointer;
+    }
+
+    .toast-item.dismissing {
+      transform: translateY(-24px) scale(0.92);
+      opacity: 0;
+    }
+
+    @keyframes toastIn {
+      0% { transform: translateY(-36px) scale(0.92); opacity: 0; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    /* Win Toast Special Aesthetics */
+    .toast-win {
+      border: 1.5px solid var(--gold);
+      background: radial-gradient(circle at top right, rgba(255, 215, 0, 0.22), transparent 70%),
+                  radial-gradient(circle at bottom left, rgba(0, 230, 118, 0.18), transparent 70%),
+                  rgba(26, 26, 40, 0.97);
+      box-shadow: 0 16px 44px rgba(0,0,0,0.85), 0 0 25px rgba(255, 215, 0, 0.4);
+    }
+
+    .toast-win::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%; width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+      transform: skewX(-20deg);
+      animation: shimmerSweep 2.2s infinite;
+    }
+
+    @keyframes shimmerSweep {
+      0% { left: -100%; }
+      100% { left: 200%; }
+    }
+
+    .toast-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .toast-win .toast-icon-wrap {
+      background: linear-gradient(135deg, rgba(255,215,0,0.3) 0%, rgba(0,230,118,0.3) 100%);
+      border: 1.5px solid var(--gold);
+      box-shadow: 0 0 16px rgba(255,215,0,0.55);
+      animation: iconFloat 1.2s infinite ease-in-out;
+    }
+
+    @keyframes iconFloat {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.12) rotate(6deg); }
+    }
+
+    .toast-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .toast-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+
+    .toast-badge {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .badge-win {
+      background: rgba(255, 215, 0, 0.22);
+      color: var(--gold);
+      border: 1px solid rgba(255, 215, 0, 0.5);
+    }
+    .badge-info { background: rgba(33, 150, 243, 0.22); color: #64B5F6; }
+    .badge-success { background: rgba(0, 230, 118, 0.22); color: var(--green); }
+    .badge-warning { background: rgba(255, 152, 0, 0.22); color: #FFB74D; }
+    .badge-error { background: rgba(255, 77, 77, 0.22); color: var(--red); }
+
+    .toast-win-amt {
+      color: var(--green);
+      font-size: 22px;
+      font-weight: 900;
+      font-family: 'Rajdhani', sans-serif;
+      text-shadow: 0 0 12px rgba(0, 230, 118, 0.6);
+      letter-spacing: 0.5px;
+    }
+
+    .toast-title-text {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--gold);
+    }
+
+    .toast-detail-text {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .toast-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg-main);
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      border: 1px solid var(--border-color);
+      margin-top: 4px;
+      color: #fff;
+    }
+
+    .toast-countdown-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: var(--gold);
+      width: 100%;
+      transform-origin: left;
+      animation: barShrink linear forwards;
+    }
+
+    @keyframes barShrink {
+      0% { transform: scaleX(1); }
+      100% { transform: scaleX(0); }
+    }
+
+    /* Confetti Particle Canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9998;
+    }
   </style>
 </head>
 <body>
+
+<!-- Confetti Canvas & Toast Notification Container -->
+<canvas id="confetti-canvas"></canvas>
+<div id="toast-container"></div>
 
 <!-- Main Web Container -->
 <div id="app-container">
@@ -616,7 +805,7 @@
     <div class="brand-title"><span class="pk">PK</span><span class="num">999</span></div>
     <div class="brand-subtitle">91 Club Color Prediction Arena</div>
     
-    <button class="google-signin-btn" id="google-auth-trigger" onclick="loginWithGoogle()">
+    <button class="google-signin-btn" id="google-auth-trigger" onclick="loginWithGoogle('popup')">
       <svg class="google-g-icon" viewBox="0 0 24 24">
         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
         <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -626,8 +815,11 @@
       Sign in with Google
     </button>
 
-    <div style="margin-top:14px;">
-      <button onclick="instantEmailLoginPrompt()" style="background:transparent; border:none; color:var(--gold); font-size:12px; cursor:pointer; text-decoration:underline;">
+    <div style="margin-top:12px; display:flex; flex-direction:column; gap:8px; align-items:center; width:100%;">
+      <button onclick="loginWithGoogle('redirect')" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14); color:#e0e0e0; border-radius:24px; padding:8px 18px; font-size:12px; font-weight:600; cursor:pointer; width:100%; max-width:320px;">
+        Google Sign-In (Redirect Mode)
+      </button>
+      <button onclick="openEmailLoginModal()" style="background:transparent; border:none; color:var(--gold); font-size:12px; cursor:pointer; text-decoration:underline; padding:4px;">
         Or enter Email / Account manually
       </button>
     </div>
@@ -1041,6 +1233,31 @@
   </div>
 </div>
 
+<!-- MODAL: DIRECT ACCOUNT / EMAIL AUTHENTICATION -->
+<div class="modal-overlay" id="email-login-modal">
+  <div class="modal-sheet">
+    <div class="modal-title">Account Sign-In / Register</div>
+    <p style="font-size:11px; color:var(--text-muted); margin-bottom:12px;">
+      Authenticate directly with Firebase Authentication without external OAuth redirect.
+    </p>
+
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input type="email" class="form-input" id="auth-email-input" value="younaskha0909@gmail.com" placeholder="name@domain.com">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Account Password</label>
+      <input type="password" class="form-input" id="auth-pass-input" value="PK999SecurePass!" placeholder="Enter password">
+    </div>
+
+    <div class="modal-btn-row">
+      <button class="btn-act btn-withdraw" onclick="closeEmailLoginModal()">Cancel</button>
+      <button class="btn-act btn-deposit" onclick="submitEmailAuth()">Log In / Sign Up</button>
+    </div>
+  </div>
+</div>
+
 <!-- REAL FIREBASE & APPLICATION LOGIC -->
 <script>
   // EXACT REAL FIREBASE CONFIGURATION PROVIDED BY USER
@@ -1061,11 +1278,16 @@
     app = firebase.initializeApp(firebaseConfig);
     auth = firebase.auth();
     db = firebase.database();
-    if (firebase.analytics) {
-      analytics = firebase.analytics();
-    }
   } catch (err) {
     console.error("Firebase init error:", err);
+  }
+
+  if (firebase.analytics) {
+    try {
+      analytics = firebase.analytics();
+    } catch (aErr) {
+      console.warn("Firebase analytics not supported in this context, safely bypassed:", aErr);
+    }
   }
 
   // App State
@@ -1112,6 +1334,210 @@
     } catch(e) {}
   }
 
+  // Multi-tone Victory Arpeggio Chime
+  function playWinCelebrationChime() {
+    try {
+      const ctx = getAudioContext();
+      if (ctx.state === 'suspended') ctx.resume();
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      notes.forEach((freq, idx) => {
+        setTimeout(() => {
+          try {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, ctx.currentTime);
+            gain.gain.setValueAtTime(0.12, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.35);
+          } catch(e) {}
+        }, idx * 110);
+      });
+    } catch(e) {}
+  }
+
+  // Confetti Particle Engine
+  let confettiAnimId = null;
+  function triggerWinConfetti(duration = 2600) {
+    const canvas = document.getElementById('confetti-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const colors = ['#FFD700', '#00E676', '#FF4D4D', '#9C27B0', '#FFFFFF', '#FFB74D'];
+    const particles = [];
+    const count = 55;
+
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: canvas.width * 0.5 + (Math.random() - 0.5) * 120,
+        y: canvas.height * 0.12,
+        vx: (Math.random() - 0.5) * 12,
+        vy: Math.random() * -6 - 3,
+        gravity: 0.28 + Math.random() * 0.1,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        size: Math.random() * 8 + 4,
+        rotation: Math.random() * 360,
+        vr: (Math.random() - 0.5) * 12,
+        opacity: 1
+      });
+    }
+
+    const startTime = Date.now();
+    if (confettiAnimId) cancelAnimationFrame(confettiAnimId);
+
+    function render() {
+      const elapsed = Date.now() - startTime;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      let alive = false;
+      particles.forEach(p => {
+        p.vy += p.gravity;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rotation += p.vr;
+        if (elapsed > duration * 0.6) {
+          p.opacity = Math.max(0, 1 - (elapsed - duration * 0.6) / (duration * 0.4));
+        }
+
+        if (p.opacity > 0 && p.y < canvas.height + 20) {
+          alive = true;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.globalAlpha = p.opacity;
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+          ctx.restore();
+        }
+      });
+
+      if (alive && elapsed < duration) {
+        confettiAnimId = requestAnimationFrame(render);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+    render();
+  }
+
+  // Toast Notification System
+  function showWinToast(amount, periodId, winningNumber, colorName) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    triggerWinConfetti();
+    playWinCelebrationChime();
+
+    const toast = document.createElement('div');
+    toast.className = 'toast-item toast-win';
+    const cColor = colorName.includes('Green') ? 'var(--green)' : 'var(--red)';
+
+    toast.innerHTML = `
+      <div class="toast-icon-wrap">🏆</div>
+      <div class="toast-content">
+        <div class="toast-top-row">
+          <span class="toast-badge badge-win">BIG WIN!</span>
+          <span class="toast-detail-text" style="font-family:'Rajdhani',sans-serif; font-weight:700;">PERIOD ${periodId.toString().slice(-6)}</span>
+        </div>
+        <div class="toast-win-amt">+Rs ${amount.toLocaleString()}</div>
+        <div style="display:flex; align-items:center; gap:6px; margin-top:2px;">
+          <span class="toast-pill">
+            Result: <strong style="color:${cColor}; margin-left:2px;">${winningNumber}</strong> (${colorName})
+          </span>
+          <span style="font-size:10px; color:var(--gold); font-weight:700;">Credited to Balance</span>
+        </div>
+      </div>
+      <div class="toast-countdown-bar" style="animation-duration: 4800ms;"></div>
+    `;
+
+    toast.onclick = () => dismissToast(toast);
+    container.appendChild(toast);
+
+    setTimeout(() => {
+      dismissToast(toast);
+    }, 4800);
+  }
+
+  function showToast(title, message, type = 'info', duration = 3200) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = 'toast-item';
+    const icon = type === 'success' ? '✅' : type === 'warning' ? '⚠️' : type === 'error' ? '❌' : 'ℹ️';
+    const badgeClass = `badge-${type}`;
+
+    toast.innerHTML = `
+      <div class="toast-icon-wrap" style="background:var(--bg-main); border:1px solid var(--border-color); font-size:20px;">
+        ${icon}
+      </div>
+      <div class="toast-content">
+        <div class="toast-top-row">
+          <span class="toast-badge ${badgeClass}">${type.toUpperCase()}</span>
+          <span style="font-size:10px; color:var(--text-muted);">Just now</span>
+        </div>
+        <div class="toast-title-text" style="font-size:15px; color:#fff;">${title}</div>
+        <div class="toast-detail-text">${message}</div>
+      </div>
+      <div class="toast-countdown-bar" style="animation-duration: ${duration}ms; background:var(--border-color);"></div>
+    `;
+
+    toast.onclick = () => dismissToast(toast);
+    container.appendChild(toast);
+
+    setTimeout(() => {
+      dismissToast(toast);
+    }, duration);
+  }
+
+  function dismissToast(toast) {
+    if (!toast || toast.classList.contains('dismissing')) return;
+    toast.classList.add('dismissing');
+    setTimeout(() => {
+      if (toast && toast.parentNode) toast.parentNode.removeChild(toast);
+    }, 260);
+  }
+
+  // Normalize post-login redirect path so any redirection to localhost/app/src or nested route resolves to index.html
+  if (window.location.protocol === 'file:') {
+    try {
+      console.log("Running in file:// scheme, redirecting to http://localhost/index.html...");
+      window.location.replace('http://localhost/index.html' + window.location.search + window.location.hash);
+    } catch (e) {
+      console.warn("Auto-redirect from file:// to localhost failed:", e);
+    }
+  } else if (window.location.pathname && (window.location.pathname.includes('app/src') || (window.location.pathname !== '/' && window.location.pathname !== '/index.html' && !window.location.pathname.includes('.')))) {
+    try {
+      console.log("Normalizing path without reloading from " + window.location.pathname + " to /index.html...");
+      window.history.replaceState({}, document.title, '/index.html' + window.location.search + window.location.hash);
+    } catch (e) {
+      console.warn("Path normalization failed:", e);
+    }
+  }
+
+  // Handle redirect credential resolution on app startup if any redirect was completed
+  if (auth && typeof auth.getRedirectResult === 'function') {
+    auth.getRedirectResult()
+      .then(result => {
+        if (result && result.user) {
+          console.log("Firebase redirect auth successful for:", result.user.email);
+          showToast('Signed In', `Welcome ${result.user.displayName || result.user.email}!`, 'success');
+          try { window.history.replaceState({}, document.title, '/index.html'); } catch (e) {}
+          switchTab('lottery');
+        }
+      })
+      .catch(error => {
+        if (error.code && error.code !== 'auth/null-user' && error.code !== 'auth/missing-initial-state') {
+          console.warn("Firebase redirect note:", error.code, error.message);
+        }
+      });
+  }
+
   // AUTH STATE LISTENER
   auth.onAuthStateChanged(user => {
     if (user) {
@@ -1120,6 +1546,14 @@
       setTimeout(() => {
         document.getElementById('splash-screen').style.display = 'none';
       }, 500);
+
+      // Clean browser history & ensure path is /index.html on post-login
+      if (window.location.pathname.includes('app/src') || window.location.search.includes('apiKey') || window.location.search.includes('state=')) {
+        try {
+          window.history.replaceState({}, document.title, '/index.html');
+        } catch (e) {}
+      }
+      switchTab('lottery');
 
       // Listen to REAL Firebase Database path /users/{uid}
       const userRef = db.ref('users/' + user.uid);
@@ -1161,6 +1595,11 @@
         renderTxLogs(snap);
       });
 
+      // Listen to real bet records under /users/{uid}/bets
+      db.ref('users/' + user.uid + '/bets').limitToLast(50).on('value', snap => {
+        renderMyBets(snap);
+      });
+
       // Listen to real referrals count
       db.ref('users/' + user.uid + '/referrals').on('value', snap => {
         const count = snap.numChildren();
@@ -1180,35 +1619,113 @@
     }
   });
 
-  // GOOGLE SIGN IN
-  function loginWithGoogle() {
+  // GOOGLE SIGN IN - Multi-mode (Popup with auto fallback to Redirect)
+  function loginWithGoogle(mode = 'popup') {
+    if (window.location.protocol === 'file:') {
+      try {
+        window.location.replace('http://localhost/index.html');
+        return;
+      } catch (e) {
+        console.warn("Could not redirect to localhost:", e);
+      }
+    }
+
+    if (!auth) {
+      showToast('Error', 'Firebase Auth is still initializing. Please retry.', 'error');
+      return;
+    }
+
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope('email');
     provider.addScope('profile');
-    
-    auth.signInWithPopup(provider).catch(err => {
-      console.warn("Popup error, trying redirect:", err);
-      // Fallback to redirect if popup is blocked
+    provider.setCustomParameters({ prompt: 'select_account' });
+
+    if (mode === 'redirect') {
+      showToast('Redirecting', 'Opening Google Authentication via redirect...', 'info');
       auth.signInWithRedirect(provider).catch(rErr => {
-        alert("Google Sign-In note: " + rErr.message);
+        console.warn("Direct redirect error:", rErr);
+        showToast('Redirect Notice', rErr.message, 'warning');
+        openEmailLoginModal();
       });
-    });
+      return;
+    }
+
+    showToast('Connecting', 'Opening Google Authentication...', 'info');
+
+    auth.signInWithPopup(provider)
+      .then(result => {
+        if (result && result.user) {
+          showToast('Signed In', `Welcome ${result.user.displayName || 'VIP Player'}!`, 'success');
+          try { window.history.replaceState({}, document.title, '/index.html'); } catch (e) {}
+          switchTab('lottery');
+        }
+      })
+      .catch(err => {
+        console.warn("Popup authentication note:", err.code, err.message);
+        if (err.code === 'auth/popup-closed-by-user') {
+          showToast('Cancelled', 'Sign-in window closed.', 'info');
+        } else if (err.code === 'auth/popup-blocked' || err.code === 'auth/operation-not-supported-in-this-environment') {
+          // Automatic seamless fallback to redirect mode
+          showToast('Redirecting', 'Popups restricted, switching to Google Sign-In redirect...', 'info');
+          auth.signInWithRedirect(provider).catch(rErr => {
+            showToast('Sign-In Notice', rErr.message, 'warning');
+            openEmailLoginModal();
+          });
+        } else if (err.code === 'auth/unauthorized-domain') {
+          showToast('Domain Notice', 'Please verify http://localhost is added in Firebase Authorized Domains, or sign in via Email below.', 'warning');
+          openEmailLoginModal();
+        } else {
+          showToast('Sign-In Notice', err.message, 'warning');
+        }
+      });
   }
 
-  // Fallback Manual Account login for testing
-  function instantEmailLoginPrompt() {
-    const email = prompt("Enter email to sign in or register on PK999:", "younaskha0909@gmail.com");
-    if (!email) return;
-    const pass = prompt("Enter account password:", "PK999SecurePass!");
-    if (!pass) return;
+  // MODAL-BASED DIRECT EMAIL & ACCOUNT AUTHENTICATION
+  function openEmailLoginModal() {
+    const modal = document.getElementById('email-login-modal');
+    if (modal) modal.style.display = 'flex';
+  }
 
-    auth.signInWithEmailAndPassword(email, pass).catch(err => {
-      if (err.code === 'auth/user-not-found') {
-        auth.createUserWithEmailAndPassword(email, pass).catch(cErr => alert(cErr.message));
-      } else {
-        alert(err.message);
-      }
-    });
+  function closeEmailLoginModal() {
+    const modal = document.getElementById('email-login-modal');
+    if (modal) modal.style.display = 'none';
+  }
+
+  function submitEmailAuth() {
+    const email = document.getElementById('auth-email-input').value.trim();
+    const pass = document.getElementById('auth-pass-input').value.trim();
+
+    if (!email || !pass) {
+      showToast('Input Required', 'Please enter both email and password.', 'warning');
+      return;
+    }
+
+    showToast('Authenticating', 'Signing in with account credentials...', 'info');
+    auth.signInWithEmailAndPassword(email, pass)
+      .then(res => {
+        closeEmailLoginModal();
+        showToast('Signed In', `Welcome ${res.user.email}!`, 'success');
+      })
+      .catch(err => {
+        if (err.code === 'auth/user-not-found') {
+          // If user doesn't exist yet, auto-create the account
+          auth.createUserWithEmailAndPassword(email, pass)
+            .then(res => {
+              closeEmailLoginModal();
+              showToast('Account Created', `Welcome ${res.user.email}!`, 'success');
+            })
+            .catch(cErr => {
+              showToast('Registration Error', cErr.message, 'error');
+            });
+        } else {
+          showToast('Auth Error', err.message, 'error');
+        }
+      });
+  }
+
+  // Alias for backward compatibility
+  function instantEmailLoginPrompt() {
+    openEmailLoginModal();
   }
 
   function signOutUser() {
@@ -1387,7 +1904,7 @@
         activeBetsForRound.push(betRecord);
         playTone(523, 'sine', 0.12);
         closeBetModal();
-        alert(`Bet of Rs ${totalBet} placed on ${currentBetChoice}!`);
+        showToast('Bet Confirmed', `Rs ${totalBet.toLocaleString()} placed on ${currentBetChoice}!`, 'success');
       }
     });
   }
@@ -1431,12 +1948,16 @@
         totalWon += payout;
         db.ref('users/' + currentUser.uid + '/bets/' + b.id).update({
           status: 'won',
-          payout: payout
+          payout: payout,
+          winningNumber: num,
+          winningColor: color
         });
       } else {
         db.ref('users/' + currentUser.uid + '/bets/' + b.id).update({
           status: 'lost',
-          payout: 0
+          payout: 0,
+          winningNumber: num,
+          winningColor: color
         });
       }
     });
@@ -1444,8 +1965,9 @@
     // If user won, add directly to REAL Firebase balance
     if (totalWon > 0 && currentUser) {
       db.ref('users/' + currentUser.uid + '/balance').transaction(b => (b || 0) + totalWon);
-      playTone(659, 'sine', 0.3);
-      alert(`🎉 CONGRATULATIONS!\nPeriod ${currentPeriod} Winning Number: ${num} (${color})\nYou won Rs ${totalWon.toLocaleString()}! Credited to Firebase balance.`);
+      showWinToast(totalWon, currentPeriod, num, color);
+    } else if (activeBetsForRound.length > 0) {
+      showToast('Round Settled', `Outcome: ${num} (${color}). Better luck next round!`, 'warning');
     }
 
     activeBetsForRound = [];
@@ -1624,6 +2146,85 @@
     });
   }
 
+  // Render Real My Bets from Firebase /users/{uid}/bets
+  function renderMyBets(snap) {
+    const list = document.getElementById('my-bets-list');
+    const tabBtn = document.getElementById('tab-my-bets');
+    if (!list) return;
+
+    if (!snap.exists()) {
+      list.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:16px;">No bets recorded in Firebase yet.</p>';
+      if (tabBtn) tabBtn.innerText = 'My Bets (0)';
+      return;
+    }
+
+    const bets = [];
+    snap.forEach(child => {
+      const b = child.val();
+      b._key = child.key;
+      bets.push(b);
+    });
+
+    // Reverse to display newest bets on top
+    bets.reverse();
+
+    if (tabBtn) {
+      tabBtn.innerText = `My Bets (${bets.length})`;
+    }
+
+    list.innerHTML = '';
+    bets.forEach(b => {
+      const div = document.createElement('div');
+      div.style.cssText = 'background:var(--bg-main); border:1px solid rgba(255,255,255,0.06); padding:10px 12px; border-radius:10px; display:flex; flex-direction:column; gap:6px;';
+
+      const status = (b.status || 'pending').toLowerCase();
+      let statusBadge = '';
+      let payoutDisplay = '';
+
+      if (status === 'won') {
+        statusBadge = `<span style="padding:2px 8px; border-radius:10px; font-size:10px; font-weight:800; background:rgba(0,230,118,0.18); color:var(--green); border:1px solid rgba(0,230,118,0.3);">WON</span>`;
+        payoutDisplay = `<span style="color:var(--green); font-weight:800; font-size:13px;">+Rs ${(b.payout || 0).toLocaleString()}</span>`;
+      } else if (status === 'lost') {
+        statusBadge = `<span style="padding:2px 8px; border-radius:10px; font-size:10px; font-weight:800; background:rgba(255,82,82,0.18); color:var(--red); border:1px solid rgba(255,82,82,0.3);">LOST</span>`;
+        payoutDisplay = `<span style="color:var(--red); font-weight:700; font-size:12px;">-Rs ${(b.totalBet || 0).toLocaleString()}</span>`;
+      } else {
+        statusBadge = `<span style="padding:2px 8px; border-radius:10px; font-size:10px; font-weight:800; background:rgba(255,215,0,0.18); color:var(--gold); border:1px solid rgba(255,215,0,0.3);">IN PLAY</span>`;
+        payoutDisplay = `<span style="color:var(--gold); font-size:11px;">Waiting result</span>`;
+      }
+
+      // Choice badge color
+      let choiceColor = 'var(--gold)';
+      if (b.choice && b.choice.includes('GREEN')) choiceColor = 'var(--green)';
+      else if (b.choice && b.choice.includes('RED')) choiceColor = 'var(--red)';
+      else if (b.choice && b.choice.includes('VIOLET')) choiceColor = '#b388ff';
+
+      const periodShort = b.periodId ? b.periodId.toString().slice(-6) : '------';
+      const outcomeText = (b.winningNumber !== undefined && b.winningNumber !== null)
+        ? `<span style="color:#fff; font-weight:700;">${b.winningNumber}</span> (${b.winningColor || ''})`
+        : `<span style="color:var(--text-muted); font-style:italic;">Pending settlement</span>`;
+
+      div.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <span style="font-size:11px; color:var(--text-muted); font-family:monospace;">Period ${periodShort}</span>
+            <span style="margin-left:8px; font-weight:700; color:${choiceColor}; font-size:12px;">${b.choice || 'BET'}</span>
+          </div>
+          <div>${statusBadge}</div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; padding-top:2px; border-top:1px solid rgba(255,255,255,0.04);">
+          <div style="color:var(--text-muted);">
+            Bet: <strong style="color:#fff;">Rs ${(b.totalBet || 0).toLocaleString()}</strong> 
+            <span style="font-size:10px; opacity:0.8;">(${b.multiplier ? 'x' + b.multiplier : ''})</span>
+            &bull; Result: ${outcomeText}
+          </div>
+          <div>${payoutDisplay}</div>
+        </div>
+      `;
+
+      list.appendChild(div);
+    });
+  }
+
   // Tab Navigation
   function switchTab(tabId) {
     document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
@@ -1646,7 +2247,7 @@
     const input = document.getElementById('referral-link-input');
     input.select();
     document.execCommand('copy');
-    alert("Referral link copied to clipboard!");
+    showToast('Copied', 'Referral link copied to clipboard!', 'info');
   }
 
   // Pre-seed initial history table display
