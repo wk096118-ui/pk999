@@ -34,6 +34,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import com.example.ota.LiveUpdateManager
+import com.example.ota.OtaBridge
 import com.example.ui.theme.CasinoBackground
 import com.example.ui.theme.MyApplicationTheme
 import java.io.ByteArrayInputStream
@@ -41,13 +43,17 @@ import java.io.InputStream
 
 class MainActivity : ComponentActivity() {
 
+    private var currentWebView: WebView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         WebView.setWebContentsDebuggingEnabled(true)
         setContent {
             MyApplicationTheme {
-                PK999WebViewContainer()
+                PK999WebViewContainer(
+                    onRegisterWebView = { wv -> currentWebView = wv }
+                )
             }
         }
     }
@@ -55,7 +61,9 @@ class MainActivity : ComponentActivity() {
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun PK999WebViewContainer() {
+fun PK999WebViewContainer(
+    onRegisterWebView: (WebView) -> Unit = {}
+) {
     var webViewInstance by remember { mutableStateOf<WebView?>(null) }
     var canGoBack by remember { mutableStateOf(false) }
     var reloadCount by remember { mutableIntStateOf(0) }
@@ -103,6 +111,18 @@ fun PK999WebViewContainer() {
                             cacheMode = WebSettings.LOAD_DEFAULT
                             setSupportMultipleWindows(true)
                             javaScriptCanOpenWindowsAutomatically = true
+                        }
+
+                        // Register OTA bridge for JavaScript to query updates and reload
+                        addJavascriptInterface(OtaBridge(context) { webViewInstance }, "AndroidOTA")
+
+                        // Trigger background OTA bundle synchronization from live URL
+                        LiveUpdateManager.syncLatestOtaBundle(context) { updated, _ ->
+                            if (updated) {
+                                post {
+                                    loadUrl("http://localhost/index.html")
+                                }
+                            }
                         }
 
                         webChromeClient = object : WebChromeClient() {
@@ -283,9 +303,13 @@ fun PK999WebViewContainer() {
                                         else -> rawPath
                                     }
 
-                                    val assetManager = view?.context?.assets ?: return null
+                                    val ctx = view?.context
+                                    val assetManager = ctx?.assets ?: return null
 
-                                    val inputStream: InputStream? = try {
+                                    // Check for Over-The-Air updated bundle first (internal storage)
+                                    val otaStream = if (ctx != null) LiveUpdateManager.getCachedOtaInputStream(ctx, assetPath) else null
+
+                                    val inputStream: InputStream? = otaStream ?: try {
                                         assetManager.open(assetPath)
                                     } catch (_: Exception) {
                                         try {
@@ -344,10 +368,12 @@ fun PK999WebViewContainer() {
 
                         loadUrl("http://localhost/index.html")
                         webViewInstance = this
+                        onRegisterWebView(this)
                     }
                 },
                 update = { webView ->
                     webViewInstance = webView
+                    onRegisterWebView(webView)
                     canGoBack = webView.canGoBack()
                 }
             )

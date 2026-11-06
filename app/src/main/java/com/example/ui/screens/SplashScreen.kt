@@ -63,8 +63,8 @@ import com.example.ui.theme.CasinoViolet
 
 @Composable
 fun SplashScreen(
-    onGoogleSignInClick: () -> Unit,
-    onGuestEnterClick: () -> Unit
+    onLoginClick: () -> Unit = {},
+    onGuestEnterClick: () -> Unit = {}
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "pulse")
     val pulseScale by infiniteTransition.animateFloat(
@@ -237,42 +237,33 @@ fun SplashScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Primary Google Sign-In Gate Button
+            // Primary Username & Password Login Button
             Button(
-                onClick = onGoogleSignInClick,
+                onClick = onLoginClick,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White,
+                    containerColor = CasinoGold,
                     contentColor = Color(0xFF1F1F1F)
                 ),
                 shape = RoundedCornerShape(28.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(54.dp)
-                    .testTag("google_signin_button")
+                    .testTag("login_button")
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    // Google 4-Color Icon Graphic Mock
-                    Box(
-                        modifier = Modifier
-                            .size(22.dp)
-                            .clip(CircleShape)
-                            .background(Color.White),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "G",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Black,
-                            color = Color(0xFF4285F4)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Icon(
+                        imageVector = Icons.Default.Security,
+                        contentDescription = "Login",
+                        tint = Color(0xFF1F1F1F),
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
                     Text(
-                        text = "Sign in with Google",
-                        fontSize = 16.sp,
+                        text = "Login with Username & Password",
+                        fontSize = 15.sp,
                         fontWeight = FontWeight.Bold
                     )
                 }

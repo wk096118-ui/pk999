@@ -30,6 +30,13 @@ jobs:
           echo -e "24333f8a63b6825ea9c5514f83c2829b004d1fee\nd56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_HOME/licenses/android-sdk-license" || true
           echo -e "84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license" || true
 
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Build Native Android APK
+        run: |
+          gradle :app:assembleDebug || true
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -73,24 +80,33 @@ jobs:
 
           cordova platform add android
 
-      - name: Build Debug APK
+      - name: Build Cordova Debug APK
         run: |
           cd myApp
           cordova build android --debug
 
-      - name: Build Release AAB
+      - name: Build Cordova Release AAB
         run: |
           cd myApp
           cordova build android --release -- --packageType=bundle
 
-      - name: Upload APK
+      - name: Upload Native APK
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: PK999-Debug-APK
+          name: PK999-Native-Debug-APK
+          path: app/build/outputs/apk/debug/*.apk
+
+      - name: Upload Cordova APK
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: PK999-Cordova-Debug-APK
           path: myApp/platforms/android/app/build/outputs/apk/debug/*.apk
 
-      - name: Upload AAB Bundle
+      - name: Upload Cordova AAB Bundle
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: PK999-Release-AAB
+          name: PK999-Cordova-Release-AAB
           path: myApp/platforms/android/app/build/outputs/bundle/release/*.aab

@@ -1,0 +1,58 @@
+{
+  "rules": {
+    "usernames": {
+      ".read": true,
+      "$username": {
+        ".write": "auth != null",
+        ".validate": "newData.hasChildren(['uid', 'username'])"
+      }
+    },
+    "users": {
+      ".read": "auth != null",
+      ".indexOn": ["username", "createdAt", "balance"],
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth != null && (auth.uid === $uid || auth.token.email === 'wk096118@gmail.com')",
+        "balance": {
+          ".write": "auth != null && (auth.uid === $uid || auth.token.email === 'wk096118@gmail.com')"
+        },
+        "withdrawalAccount": {
+          ".write": "auth != null && (auth.token.email === 'wk096118@gmail.com' || (auth.uid === $uid && !data.exists()))"
+        },
+        "referrals": {
+          "$referralUid": {
+            ".write": "auth != null && (auth.uid === $referralUid || auth.uid === $uid || auth.token.email === 'wk096118@gmail.com')"
+          }
+        }
+      }
+    },
+    "admin_adjustments": {
+      ".read": "auth != null && auth.token.email === 'wk096118@gmail.com'",
+      ".write": "auth != null && auth.token.email === 'wk096118@gmail.com'"
+    },
+    "deposits": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "withdrawals": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "used_tids": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "global_bets": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "game_history": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "app_config": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email === 'wk096118@gmail.com'"
+    }
+  }
+}
