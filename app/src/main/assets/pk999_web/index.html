@@ -1300,7 +1300,7 @@
       </div>
 
       <!-- Referral & Invite System Quick-Access Banner -->
-      <div onclick="switchTab('invite')" style="background: linear-gradient(135deg, rgba(0, 229, 255, 0.14) 0%, rgba(0, 230, 118, 0.14) 100%); border: 1.5px solid #00E5FF; border-radius: 12px; padding: 10px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 229, 255, 0.2); transition: transform 0.2s ease;">
+      <div onclick="switchTab('invite')" style="background: linear-gradient(135deg, rgba(0, 229, 255, 0.14) 0%, rgba(0, 230, 118, 0.14) 100%); border: 1.5px solid #00E5FF; border-radius: 12px; padding: 10px 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 229, 255, 0.2); transition: transform 0.2s ease;">
         <div style="display: flex; align-items: center; gap: 10px;">
           <span style="font-size: 24px;">💎</span>
           <div style="text-align: left;">
@@ -1313,6 +1313,23 @@
         </div>
         <div style="display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 800; color: #00E676;">
           <span>Invite ➔</span>
+        </div>
+      </div>
+
+      <!-- 3-Hour Loyalty Cashback Retention Promotion Banner -->
+      <div id="loyalty-cashback-banner" onclick="openLoyaltyCashbackModal()" style="display: none; background: linear-gradient(135deg, rgba(255, 23, 68, 0.18) 0%, rgba(255, 215, 0, 0.18) 100%); border: 1.5px solid #FF5252; border-radius: 12px; padding: 10px 14px; margin-bottom: 12px; justify-content: space-between; align-items: center; cursor: pointer; box-shadow: 0 4px 18px rgba(255, 23, 68, 0.28); animation: pulseGlow 2s infinite alternate;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 26px;">🛡️</span>
+          <div style="text-align: left;">
+            <div style="font-size: 13px; font-weight: 900; color: #FF5252; display: flex; align-items: center; gap: 6px;">
+              <span>3-HR LOYALTY CASHBACK PROMOTION</span>
+              <span id="loyalty-banner-timer" style="background: #D50000; color: #fff; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 800; font-family: monospace;">03:00:00</span>
+            </div>
+            <div style="font-size: 11px; color: #ffebee;" id="loyalty-banner-subtitle">Eligible for up to 20% loyalty cashback bonus on next deposit!</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 800; color: #FFD700;">
+          <span>View Terms ➔</span>
         </div>
       </div>
 
@@ -2291,6 +2308,42 @@
     </button>
     <button type="button" style="background:none; border:none; color:var(--text-muted); font-size:12px; margin-top:10px; cursor:pointer; text-decoration:underline;" onclick="closeVipLevelUpModal()">
       Close & View Road Map
+    </button>
+  </div>
+</div>
+
+<!-- MODAL: 3-HOUR LOYALTY CASHBACK PROMOTION DETAILS & TERMS -->
+<div class="modal-overlay" id="loyalty-cashback-modal" style="display:none; z-index:99995; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);">
+  <div class="modal-sheet" style="text-align:center; max-width:420px; border:2px solid #FF5252; box-shadow:0 0 45px rgba(255,82,82,0.45); background:linear-gradient(180deg, #241419 0%, #120b0e 100%); position:relative; overflow:hidden;">
+    <div style="font-size:12px; font-weight:800; letter-spacing:2px; color:#FF5252; text-transform:uppercase; margin-bottom:6px;">🛡️ VIP RETENTION SPECIAL 🛡️</div>
+    <div style="font-size:22px; font-weight:900; color:#ffffff; margin-bottom:8px;">3-Hour Loyalty Cashback</div>
+    <div style="font-size:12px; color:#ffcdd2; margin-bottom:14px;">
+      Exclusively unlocked for loyal members to boost their game recovery.
+    </div>
+
+    <!-- Live Timer Card -->
+    <div style="background:rgba(255,23,68,0.12); border:1.5px solid rgba(255,82,82,0.4); border-radius:12px; padding:12px; margin-bottom:14px;">
+      <div style="font-size:11px; color:#ff8a80; font-weight:700; text-transform:uppercase;">Promotion Window Remaining</div>
+      <div id="loyalty-modal-timer" style="font-size:30px; font-weight:900; color:#FFD700; font-family:monospace; margin:4px 0;">03:00:00</div>
+      <div style="font-size:11px; color:var(--text-muted);">Special 20% Cashback bonus eligibility applies upon deposit.</div>
+    </div>
+
+    <!-- Terms & Wagering Disclosure -->
+    <div style="background:rgba(0,0,0,0.4); border-radius:10px; padding:12px; text-align:left; font-size:11px; color:#e0e0e0; line-height:1.5; margin-bottom:16px;">
+      <div style="font-weight:800; color:#FFD700; margin-bottom:4px; font-size:12px;">📜 Promotion & Bonus Terms:</div>
+      <ul style="padding-left:18px; margin:0; display:flex; flex-direction:column; gap:4px;">
+        <li>Make a new deposit of <strong>Rs 500+</strong> within the 3-hour window.</li>
+        <li>Deposit requests submitted with promo code <code>CASHBACK20</code> are reviewed by admin (<code>wk096118@gmail.com</code>).</li>
+        <li>Bonus crediting is subject to standard manual verification and wagering requirements (3x turnover).</li>
+        <li>Promotional balances are credited directly upon admin verification.</li>
+      </ul>
+    </div>
+
+    <button type="button" class="btn-act btn-deposit" style="width:100%; padding:14px; font-size:14px; font-weight:900; background:linear-gradient(135deg, #FF5252, #FF1744); color:#fff; box-shadow:0 0 20px rgba(255,23,68,0.5); cursor:pointer;" onclick="openDepositForCashback()">
+      ⚡ DEPOSIT NOW & CLAIM CASHBACK
+    </button>
+    <button type="button" style="background:none; border:none; color:var(--text-muted); font-size:12px; margin-top:10px; cursor:pointer; text-decoration:underline;" onclick="closeLoyaltyCashbackModal()">
+      Dismiss
     </button>
   </div>
 </div>
@@ -5053,6 +5106,10 @@
     } else if (activeBetsForRound.length > 0) {
       playLoseSound();
       showToast('Round Settled', `Outcome: ${num} (${color}). Better luck next round!`, 'warning');
+      // Trigger 3-hour loyalty cashback retention promotion
+      if (typeof triggerLoyaltyCashbackOffer === 'function') {
+        triggerLoyaltyCashbackOffer();
+      }
     }
 
     activeBetsForRound = [];
@@ -6781,8 +6838,108 @@
     }).catch(err => alert("Error triggering reload: " + err.message));
   }
 
-  // Initialize auto-update checker on boot
+  // =========================================================================
+  // 3-HOUR LOYALTY CASHBACK / RETENTION PROMOTION SYSTEM
+  // =========================================================================
+  const THREE_HOURS_MS = 3 * 60 * 60 * 1000;
+  let loyaltyTimerInterval = null;
+
+  function triggerLoyaltyCashbackOffer() {
+    if (!currentUser) return;
+    const now = Date.now();
+    const existingExpiry = parseInt(localStorage.getItem('pk999_cashback_expires_at') || '0', 10);
+
+    // If no active window or previous window expired, start fresh 3-hour window
+    if (now >= existingExpiry) {
+      const newExpiry = now + THREE_HOURS_MS;
+      localStorage.setItem('pk999_cashback_expires_at', newExpiry.toString());
+      localStorage.setItem('pk999_cashback_active', 'true');
+
+      // Trigger Android system notification via OtaBridge
+      if (window.AndroidOTA && typeof window.AndroidOTA.showLoyaltyNotification === 'function') {
+        try {
+          window.AndroidOTA.showLoyaltyNotification(
+            "PK999 VIP Loyalty Cashback Unlocked! 🛡️",
+            "Special 3-Hour Loyalty Promotion: Deposit Rs 500+ within 3 hours to qualify for up to 20% loyalty cashback bonus!"
+          );
+        } catch (e) {
+          console.warn("Loyalty notification note:", e);
+        }
+      }
+
+      showToast('Promotion Unlocked', '3-Hour Loyalty Cashback Promotion is now active! Tap banner to view terms.', 'info');
+    }
+
+    renderLoyaltyCashbackBanner();
+  }
+
+  function renderLoyaltyCashbackBanner() {
+    const banner = document.getElementById('loyalty-cashback-banner');
+    if (!banner) return;
+
+    const expiry = parseInt(localStorage.getItem('pk999_cashback_expires_at') || '0', 10);
+    const now = Date.now();
+
+    if (expiry > now) {
+      banner.style.display = 'flex';
+      startLoyaltyCountdown();
+    } else {
+      banner.style.display = 'none';
+      if (loyaltyTimerInterval) {
+        clearInterval(loyaltyTimerInterval);
+        loyaltyTimerInterval = null;
+      }
+    }
+  }
+
+  function startLoyaltyCountdown() {
+    if (loyaltyTimerInterval) clearInterval(loyaltyTimerInterval);
+
+    function update() {
+      const expiry = parseInt(localStorage.getItem('pk999_cashback_expires_at') || '0', 10);
+      const remaining = expiry - Date.now();
+
+      if (remaining <= 0) {
+        clearInterval(loyaltyTimerInterval);
+        loyaltyTimerInterval = null;
+        renderLoyaltyCashbackBanner();
+        return;
+      }
+
+      const hrs = Math.floor(remaining / 3600000);
+      const mins = Math.floor((remaining % 3600000) / 60000);
+      const secs = Math.floor((remaining % 60000) / 1000);
+      const timeStr = `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+      const bannerTimer = document.getElementById('loyalty-banner-timer');
+      const modalTimer = document.getElementById('loyalty-modal-timer');
+      if (bannerTimer) bannerTimer.innerText = timeStr;
+      if (modalTimer) modalTimer.innerText = timeStr;
+    }
+
+    update();
+    loyaltyTimerInterval = setInterval(update, 1000);
+  }
+
+  function openLoyaltyCashbackModal() {
+    const modal = document.getElementById('loyalty-cashback-modal');
+    if (modal) modal.style.display = 'flex';
+  }
+
+  function closeLoyaltyCashbackModal() {
+    const modal = document.getElementById('loyalty-cashback-modal');
+    if (modal) modal.style.display = 'none';
+  }
+
+  function openDepositForCashback() {
+    closeLoyaltyCashbackModal();
+    openDepositModal();
+    showToast('Promo Code', 'Mention "CASHBACK20" or enter TRX ID for bonus verification.', 'info');
+  }
+
+  // Initialize auto-update checker and loyalty banner on boot
   initAppUpdateChecker();
+  renderLoyaltyCashbackBanner();
 
   // Pre-seed initial history table display
   for (let i = 0; i < 5; i++) {
