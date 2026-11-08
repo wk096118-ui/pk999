@@ -3804,13 +3804,16 @@
 
   let currentReferralsList = [];
 
+  // Official Live Blogger post URL for app downloads and referral landing
+  const OFFICIAL_BLOGGER_REFERRAL_BASE_URL = "https://mymobilemoneyhub2026.blogspot.com/2026/11/pk999-game-official-app-download.html";
+
   function getReferralId() {
     return currentUser ? currentUser.uid : '';
   }
 
   function getReferralLink() {
-    if (!currentUser) return '';
-    return window.location.origin + window.location.pathname + '?ref=' + currentUser.uid;
+    if (!currentUser) return OFFICIAL_BLOGGER_REFERRAL_BASE_URL;
+    return OFFICIAL_BLOGGER_REFERRAL_BASE_URL + '?ref=' + encodeURIComponent(currentUser.uid);
   }
 
   function copyReferralId() {
@@ -4300,7 +4303,7 @@
       // Update Referral ID and Shareable Link
       const refIdInput = document.getElementById('ref-id-input');
       if (refIdInput) refIdInput.value = user.uid;
-      const refLink = window.location.origin + window.location.pathname + '?ref=' + user.uid;
+      const refLink = getReferralLink();
       const refInput = document.getElementById('referral-link-input');
       if (refInput) refInput.value = refLink;
       renderReferralDashboard();
@@ -6473,10 +6476,25 @@
   }
 
   function copyReferralLink() {
+    const link = getReferralLink();
     const input = document.getElementById('referral-link-input');
-    input.select();
-    document.execCommand('copy');
-    showToast('Copied', 'Referral link copied to clipboard!', 'info');
+    if (input) input.value = link;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(link).then(() => {
+        showToast('Copied', 'Live invite link copied to clipboard!', 'info');
+      }).catch(() => {
+        if (input) {
+          input.select();
+          document.execCommand('copy');
+          showToast('Copied', 'Live invite link copied to clipboard!', 'info');
+        }
+      });
+    } else if (input) {
+      input.select();
+      document.execCommand('copy');
+      showToast('Copied', 'Live invite link copied to clipboard!', 'info');
+    }
   }
 
   // =========================================================================
